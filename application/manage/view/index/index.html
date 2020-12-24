@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{$title}</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<link rel="stylesheet" href="/resource/layuiadmin/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/resource/layuiadmin/style/admin.css" media="all">
+</head>
+<body class="layui-layout-body">
+
+<div id="LAY_app">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+        <!-- 头部区域 -->
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                    <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
+                        <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;" layadmin-event="refresh" title="刷新">
+                        <i class="layui-icon layui-icon-refresh-3"></i>
+                    </a>
+                </li>
+                <!-- <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search" layadmin-event="serach" lay-action="template/search.html?keywords=">
+                </li> -->
+            </ul>
+            <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right" style="margin-right: 40px;">
+                <!-- <li class="layui-nav-item" lay-unselect>
+                    <a lay-href="app/message/index.html" layadmin-event="message" lay-text="消息中心">
+                        <i class="layui-icon layui-icon-notice"></i>
+                        <span class="layui-badge-dot"></span>
+                    </a>
+                </li> -->
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="javascript:;" layadmin-event="theme">
+                        <i class="layui-icon layui-icon-theme"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="javascript:;" layadmin-event="note">
+                        <i class="layui-icon layui-icon-note"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="javascript:;" layadmin-event="fullscreen">
+                        <i class="layui-icon layui-icon-screen-full"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;">
+                        <cite>{$admin_username}</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <!-- <dd><a lay-href="set/user/info.html">基本资料</a></dd>
+                        <dd><a lay-href="set/user/password.html">修改密码</a></dd>
+                        <hr> -->
+                        <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+
+    <!-- 侧边菜单 -->
+    <div class="layui-side layui-side-menu">
+        <div class="layui-side-scroll">
+            <div class="layui-logo">
+                <span>{$title}</span>
+            </div>
+            <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+                {foreach $adminRole as $key=>$value}
+                <li data-name="" class="layui-nav-item"><!-- layui-nav-itemed -->
+                    <a href="javascript:;" lay-tips="{$value.role_name}" lay-direction="2">
+                        <i class="layui-icon
+                        {switch $value.role_id}
+                            {case 1}layui-icon-set{/case}
+                            {case 2}layui-icon-user{/case}
+                            {case 3}layui-icon-rmb{/case}
+                            {case 4}layui-icon-list{/case}
+                            {case 5}layui-icon-chart-screen{/case}
+                            {case 7}layui-icon-read{/case}
+                            {case 255}layui-icon-group{/case}
+                            {case 331}layui-icon-senior{/case}
+                        {/switch}"></i>
+                        <cite>{$value.role_name}</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        {foreach $value.role2 as $key2=>$value2}
+                        <dd data-name=""><!-- layui-this -->
+                            <a lay-href="{$value2.role_url}">{$value2.role_name}</a>
+                        </dd>
+                        {/foreach}
+                    </dl>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+
+    <!-- 页面标签 -->
+    <div class="layadmin-pagetabs" id="LAY_app_tabs">
+        <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+        <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+        <div class="layui-icon layadmin-tabs-control layui-icon-down">
+            <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;"></a>
+                    <dl class="layui-nav-child layui-anim-fadein">
+                        <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
+                        <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
+                        <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+        <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+            <ul class="layui-tab-title" id="LAY_app_tabsheader">
+                <li lay-id="home/console.html" lay-attr="home/console.html" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+            </ul>
+        </div>
+    </div>
+
+
+    <!-- 主体内容 -->
+    <div class="layui-body" id="LAY_app_body">
+        <div class="layadmin-tabsbody-item layui-show" style="background-color: #e3e3e3;padding-left: 20px;padding-right: 20px;padding-top: 20px;">
+
+<!-- 开始  -->
+<style>    
+	.store-total-container {
+        font-size: 14px;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    .store-total-container .store-total-icon {
+        top: 45%;
+        right: 8%;
+        font-size: 65px;
+        position: absolute;
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .store-total-container .store-total-item {
+        color: #fff;
+        line-height: 4em;
+        padding: 15px 25px;
+        position: relative;
+    }
+
+    .store-total-container .store-total-item > div:nth-child(2) {
+        font-size: 46px;
+        line-height: 46px;
+    }
+
+</style>
+<div class="think-box-shadow store-total-container notselect">
+
+	<div class="layui-row layui-col-space15">
+		<div class="layui-col-sm4 layui-col-md2" style="width:20%;">
+			<div class="store-total-item nowrap" style="background:linear-gradient(-125deg,#57bdbf,#2f9de2)">
+				<div>今天新增用户</div>
+				<div>{$usertoday}</div>
+				<div>昨日新增用户:{$userzt}<br>总用户:{$userzong}</div>
+			</div>
+			<i class="store-total-icon layui-icon layui-icon-user"></i>
+		</div>
+		<div class="layui-col-sm4 layui-col-md2" style="width:20%;">
+			<div class="store-total-item nowrap" style="background:linear-gradient(-125deg,#ff7d7d,#fb2c95)">
+				<div>今天新增VIP</div>
+				<div>{$viptoday}</div>
+				<div>昨日新增VIP:{$vipzt}<br>总VIP:{$vipzong}</div>
+			</div>
+			<i class="store-total-icon layui-icon layui-icon-auz"></i>
+		</div>
+		<div class="layui-col-sm4 layui-col-md2" style="width:20%;">
+			<div class="store-total-item nowrap" style="background:linear-gradient(-113deg,#c543d8,#925cc3)">
+				<div>今天下单</div>
+				<div>{$xiadtoday}</div>
+				<div>昨日下单:{$xiadzt}<br>总下单:{$xiadzong}</div>
+			</div>
+			<i class="store-total-icon layui-icon layui-icon-read"></i>
+		</div>
+		<div class="layui-col-sm4 layui-col-md2" style="width:20%;">
+			<div class="store-total-item nowrap" style="background:linear-gradient(-113deg,#5fb878,#009688)">
+				<div>今天充值(人)</div>
+				<div>{$cztoday}</div>
+				<div>昨天充值:{$czzt}<br>总充值:{$czzong}</div>
+			</div>
+			<i class="store-total-icon layui-icon layui-icon-read"></i>
+		</div>
+		<div class="layui-col-sm4 layui-col-md2" style="width:20%;">
+			<div class="store-total-item nowrap" style="background:linear-gradient(-141deg,#ecca1b,#f39526)">
+				<div>今天提现(人)</div>
+				<div>{$txtoday}</div>
+				<div>昨天提现:{$txzt}<br>总提现:{$txzong}</div>
+			</div>
+			<i class="store-total-icon layui-icon layui-icon-rmb"></i>
+		</div>
+		<div class="layui-col-sm4 layui-col-md2" style="width:20%;">
+			<div class="store-total-item nowrap" style="background:linear-gradient(-125deg,#57bdbf,#2f9de2)">
+				<div>今天充值</div>
+				<div>{$cztodaye}</div>
+				<div>昨天充值:{$czzte}<br>总充值:{$czzonge}</div>
+			</div>
+			<i class="store-total-icon layui-icon layui-icon-user"></i>
+		</div>
+		<div class="layui-col-sm4 layui-col-md2" style="width:20%;">
+			<div class="store-total-item nowrap" style="background:linear-gradient(-125deg,#ff7d7d,#fb2c95)">
+				<div>今天提现总额</div>
+				<div>{$txtodaye}</div>
+				<div>昨天提现总额:{$txzte}<br>总提现:{$txzonge}</div>
+			</div>
+			<i class="store-total-icon layui-icon layui-icon-auz"></i>
+		</div>
+		<div class="layui-col-sm4 layui-col-md2" style="width:20%;">
+			<div class="store-total-item nowrap" style="background:linear-gradient(-113deg,#c543d8,#925cc3)">
+				<div>会员余额</div>
+				<div style="font-size:16px;">{$userzonge}</div>
+				<div></div>
+			</div>
+			<i class="store-total-icon layui-icon layui-icon-read"></i>
+		</div>
+	</div>
+</div>
+</div>
+
+<!-- 结束  -->
+
+        </div>
+    </div>
+
+    <!-- 辅助元素，一般用于移动设备下遮罩 -->
+    <div class="layadmin-body-shade" layadmin-event="shade"></div>
+    </div>
+</div>
+
+<script src="/resource/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/resource/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use('index');
+</script>
+</body>
+</html>
