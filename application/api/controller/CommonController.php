@@ -5,7 +5,7 @@ namespace app\api\controller;
 use think\Cache;
 
 use app\api\controller\BaseController;
-
+use think\facade\Request;
 
 
 class CommonController extends BaseController{
@@ -137,23 +137,33 @@ class CommonController extends BaseController{
 	//	}
 		$data['info']['userviplist']	=	array_merge($userviplist,$userviplist2);
 		// 会员榜单
-		for ($i=0;$i < 10;$i++) {
 
-			//$headKey		= array_rand($headData);
-			$headKey		= $i;
+        for ($i=0;$i < 20;$i++) {
+
+			$headKey		= array_rand($headData);
+//			$headKey		= $i;
 			$headerImage	= $headData[$headKey];
 
 			$nameKey		= array_rand($usernameData);
 			$username		= $usernameData[$nameKey];
 
 			$data['info']['memberList'][$i]['username']		= '****'.mt_rand(1000,9999);
-			$data['info']['memberList'][$i]['header'] 		= $headerImage;
+			$data['info']['memberList'][$i]['header'] 		= Request::domain().'/xml/static/head/'.$headerImage;
 			$data['info']['memberList'][$i]['number'] 		= mt_rand(10,100);
 			$data['info']['memberList'][$i]['profit'] 		= round($data['info']['memberList'][$i]['number'] * 1.8,3);
 
 		}
-		
-		
+
+        $members = model('Users')->field('id,uid,username,header')->where('user_type','=',2)->order('id','desc')->limit(20)->select();
+//        var_dump($members);
+        if(!empty($members)){
+            foreach ($members as $index => $member){
+                if($member['header']!='head_1.png'){
+                    $data['info']['memberList'][$index]['header'] = $member['header'];
+                }
+            }
+        }
+
 		// 商家榜单
 		for ($j=0;$j < 20;$j++) {
 

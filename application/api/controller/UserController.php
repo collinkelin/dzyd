@@ -2,6 +2,7 @@
 namespace app\api\controller;
 
 use app\api\controller\BaseController;
+use think\facade\Request;
 
 class UserController extends BaseController{
 	// 手机验证码+邀请码注册
@@ -191,7 +192,7 @@ class UserController extends BaseController{
 		$token      = input('post.token/s');
 		$userArr	= explode(',', auth_code($token, 'DECODE'));
 		$uid		= $userArr[0];
-        $lang		= (input('post.lang')) ? input('post.lang') : 'ft';	// 语言类型
+        $lang		= (input('post.lang')) ? input('post.lang') : 'cn';	// 语言类型
 		$param = input('post.');
 		// 获取文件
 		$file = request()->file('image');
@@ -231,32 +232,35 @@ class UserController extends BaseController{
 			switch ($param['type']) {
 				// 用户头像
 				case '1':
-					$res = model('Users')->where('id', $param['uid'])->setField('header', $savePath);
+				    $header_url = Request::domain().ltrim($savePath, '.');
+                    $_return['url'] 	= $header_url;
+//					$res = model('Users')->where('id', $uid)->setField('header', $savePath);
+					$res = model('Users')->where('id', $uid)->setField('header', $header_url);
 					if ($res) {
 						$_return['code']    = 1;
 						$_return['imghtml'] = $absPath;
 					} else {
 						unlink($uploadPath);
 						$_return['code']     = 0;
-            if($lang=='cn'){
-			$_return['code_dec'] = '图片上载失败';
-			}elseif($lang=='en'){
-			$_return['code_dec'] = 'Image upload failed';    
-			}elseif($lang=='id'){
-			$_return['code_dec'] = 'Mengupload gambar gagal';   
-			}elseif($lang=='ft'){
-			$_return['code_dec'] = '圖片上載失敗';    
-			}elseif($lang=='yd'){
-			$_return['code_dec'] = 'छवि अपलोड असफल';    
-			}elseif($lang=='vi'){
-			$_return['code_dec'] = 'Lỗi tải ảnh';    
-			}elseif($lang=='es'){
-			$_return['code_dec'] = 'Error al cargar la imagen';    
-			}elseif($lang=='ja'){
-			$_return['code_dec'] = '画像のアップロードに失敗しました';    
-			}elseif($lang=='th'){
-			$_return['code_dec'] = 'ล้มเหลวในการอัพโหลดรูปภาพ';    
-			}						
+                        if($lang=='cn'){
+                        $_return['code_dec'] = '图片上载失败';
+                        }elseif($lang=='en'){
+                        $_return['code_dec'] = 'Image upload failed';
+                        }elseif($lang=='id'){
+                        $_return['code_dec'] = 'Mengupload gambar gagal';
+                        }elseif($lang=='ft'){
+                        $_return['code_dec'] = '圖片上載失敗';
+                        }elseif($lang=='yd'){
+                        $_return['code_dec'] = 'छवि अपलोड असफल';
+                        }elseif($lang=='vi'){
+                        $_return['code_dec'] = 'Lỗi tải ảnh';
+                        }elseif($lang=='es'){
+                        $_return['code_dec'] = 'Error al cargar la imagen';
+                        }elseif($lang=='ja'){
+                        $_return['code_dec'] = '画像のアップロードに失敗しました';
+                        }elseif($lang=='th'){
+                        $_return['code_dec'] = 'ล้มเหลวในการอัพโหลดรูปภาพ';
+                        }
 					}
 					break;
 				// 群头像
@@ -268,25 +272,25 @@ class UserController extends BaseController{
 					} else {
 						unlink($uploadPath);
 						$_return['code']     = 0;
-            if($lang=='cn'){
-			$_return['code_dec'] = '图片上载失败';
-			}elseif($lang=='en'){
-			$_return['code_dec'] = 'Image upload failed';    
-			}elseif($lang=='id'){
-			$_return['code_dec'] = 'Mengupload gambar gagal';   
-			}elseif($lang=='ft'){
-			$_return['code_dec'] = '圖片上載失敗';    
-			}elseif($lang=='yd'){
-			$_return['code_dec'] = 'छवि अपलोड असफल';    
-			}elseif($lang=='vi'){
-			$_return['code_dec'] = 'Lỗi tải ảnh';    
-			}elseif($lang=='es'){
-			$_return['code_dec'] = 'Error al cargar la imagen';    
-			}elseif($lang=='ja'){
-			$_return['code_dec'] = '画像のアップロードに失敗しました';    
-			}elseif($lang=='th'){
-			$_return['code_dec'] = 'ล้มเหลวในการอัพโหลดรูปภาพ';    
-			}
+                        if($lang=='cn'){
+                        $_return['code_dec'] = '图片上载失败';
+                        }elseif($lang=='en'){
+                        $_return['code_dec'] = 'Image upload failed';
+                        }elseif($lang=='id'){
+                        $_return['code_dec'] = 'Mengupload gambar gagal';
+                        }elseif($lang=='ft'){
+                        $_return['code_dec'] = '圖片上載失敗';
+                        }elseif($lang=='yd'){
+                        $_return['code_dec'] = 'छवि अपलोड असफल';
+                        }elseif($lang=='vi'){
+                        $_return['code_dec'] = 'Lỗi tải ảnh';
+                        }elseif($lang=='es'){
+                        $_return['code_dec'] = 'Error al cargar la imagen';
+                        }elseif($lang=='ja'){
+                        $_return['code_dec'] = '画像のアップロードに失敗しました';
+                        }elseif($lang=='th'){
+                        $_return['code_dec'] = 'ล้มเหลวในการอัพโหลดรูปภาพ';
+                        }
 					}
 					break;
 				// 聊天图片

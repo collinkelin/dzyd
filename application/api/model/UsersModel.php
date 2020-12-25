@@ -188,7 +188,7 @@ class UsersModel extends Model{
 			'zcip'			=> request()->ip(),
 			'weixin'	  		=> $weixin,
 			'vip_level'	  		=> 1,		// 普通会员
-			'header'	  		=> 'head_1.png',
+			'header'	  		=> Request::domain().'/xml/static/head/head_1.png',
 			'recommend'	  		=> $suserinfo['idcode'],//统一用idcode 做邀请码 统计 	
 			'last_ip'	  		=> request()->ip(),
 		];

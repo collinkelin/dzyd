@@ -7,7 +7,8 @@ class Task extends Validate
 {
 	protected $rule =   [
         'task_class'       => 'require|integer',
-        'title'            => 'require|chsDash',
+//        'title'            => 'require|chsDash',
+        'title'            => 'require',
         'content'          => 'require',
         'reward_price'     => 'require|float',
         'total_number'     => 'require|integer',
