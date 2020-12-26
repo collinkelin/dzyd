@@ -1592,6 +1592,13 @@ $task_step = '';
 			'field'				=>	'l_t_o_n',//领取
 			'value' 			=>	1,
 		);
+		//更新每日完成任务次数
+		$UserDailydata = array(
+			'uid'				=>	$uid,
+			'username'			=>	$username,
+			'field'				=>	'w_t_o_n',//领取
+			'value' 			=>	1,
+		);
 		model('UserDaily')->updateReportfield($UserDailydata);
 
 		if($lang=='cn'){

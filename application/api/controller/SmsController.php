@@ -45,6 +45,19 @@ class SmsController extends Controller{
     		);
     		return json($data);
 	    }
+	    if($lang=='yny'){
+    		$data	=	array(
+                array('id'=>'91','name'=>'INDIA(भारत)'),
+    		    array('id'=>'1','name'=>'USA(美国)'),
+    // 			array('id'=>'86','name'=>'CHINA(中国)'),
+    //			array('id'=>'62','name'=>'INDOESIA(印度尼西亚)'),
+    //			array('id'=>'84','name'=>'VIETNAM(越南)'),
+    //			array('id'=>'34','name'=>'España(西班牙)'),
+    // 			array('id'=>'81','name'=>'JAPAN(日本)'),
+    //			array('id'=>'66','name'=>'THAILAND(泰国)'),
+    		);
+    		return json($data);
+	    }
 	    if($lang=='ft'){
 		$data	=	array(
     		    array('id'=>'1','name'=>'USA(美国)'),
@@ -86,14 +99,14 @@ class SmsController extends Controller{
 	    }
 	    if($lang=='id'){
 		$data	=	array(
-		    array('id'=>'91','name'=>'INDIA(भारत)'),
-		    array('id'=>'62','name'=>'INDOESIA(印度尼西亚)'),
-		    array('id'=>'86','name'=>'CHINA(中国)'),
+            array('id'=>'91','name'=>'INDIA(भारत)'),
+//            array('id'=>'62','name'=>'INDOESIA(印度尼西亚)'),
+//		    array('id'=>'86','name'=>'CHINA(中国)'),
 			array('id'=>'1','name'=>'USA(美国)'),
-			array('id'=>'84','name'=>'VIETNAM(越南)'),
-			array('id'=>'34','name'=>'España(西班牙)'),
-			array('id'=>'81','name'=>'JAPAN(日本)'),
-			array('id'=>'66','name'=>'THAILAND(泰国)'),
+//			array('id'=>'84','name'=>'VIETNAM(越南)'),
+//			array('id'=>'34','name'=>'España(西班牙)'),
+//			array('id'=>'81','name'=>'JAPAN(日本)'),
+//			array('id'=>'66','name'=>'THAILAND(泰国)'),
 		);
 		return json($data);
 	    }

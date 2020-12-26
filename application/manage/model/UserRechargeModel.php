@@ -135,76 +135,8 @@ class UserRechargeModel extends Model{
 			$balance = model('UserTotal')->field('balance')->where('uid',$orderInfo['uid'])->find();
 			//更新用户金额信息
 			$res2 = model('UserTotal')->where('uid',$orderInfo['uid'])->inc('total_recharge',$orderInfo['money'])->inc('balance',$orderInfo['money'])->update();
-            //更新vip会员
-            /*
-             * V1会员。200起，不需要有下级会员，每天可以得到50个点赞。可以赚取到10到15卢比之间 。佣金比例%0.25
-             * V2会员。2000起 需要3个1级会员 每天可以得到55个点赞。赚取120到130之间佣金比例%0.28
-             * V3会员。5000起 需要5个2级会员。10个1级会员。每天60次订单。赚取400到450佣金比例%0.3
-             * V4会员。10000起，需要10个3级会员。20个2级会员。30个1级会员，每天65次点赞赚取900到950 。佣金比例%0.32
-             * V5会员。20000起 需要15个3级会员。30个20级会员。50个1级会员。每天70次点赞赚取1400到1500  佣金比例%0.36
-             * V6会员。50000起.需要30个3级会员。50个2级会员。100个1级会员。每天80次订单赚取4500到5000   佣金比例%0.4
-             * */
 
-             //要判断的当前用户及所有上级
-            $allUpUsers = $this->getAllUpVip($orderInfo['uid']);
-            $allSubMembers = $this->getSubMembers($allUpUsers);
-            foreach ($allUpUsers as $item_uid){
-                $balance = model('UserTotal')->field('balance')->where('uid',$item_uid)->find();
-                $is_grade = model('UserVip')->where('uid',$item_uid)->field('grade')->find();
-                $username = model('Users')->where('uid',$item_uid)->value('username');
-                $updateData = [
-                    'uid' => $item_uid,
-                    'username' => $username,
-                    'state' => 1,
-                    'en_name' => 'Ordinary member',
-                    'name' => '普通会员',
-                    'ft_name' => 'Teradata',
-                    'ry_name' => 'Teradata',
-                    'ydn_name' => 'Teradata',
-                    'xby_name' => 'Teradata',
-                    'yn_name' => 'Teradata',
-                    'ty_name' => 'Teradata',
-                    'yd_name' => 'साधारण सदस्य',
-                    'grade' => 2,
-                    'stime' => time(),
-                    'etime' => time()+3600*24*800,
-                ];
-                //var_dump($updateData);
-                if(!$is_grade){
-                    $rid = model('UserVip')->insert($updateData);
-                }
-                if ($balance['balance']>=200){
-                    model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+1,'name'=>50]);
-                }elseif ( //v2
-                    $balance['balance']>=2000
-                    && $allSubMembers[$item_uid]['one']>=3
-                    ){
-                    model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+2,'name'=>55]);
-                }elseif (  //v3
-                    $balance['balance']>=5000
-                    && $allSubMembers[$item_uid]['one']>=10
-                    && $allSubMembers[$item_uid]['two']>=5){
-                    model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+3,'name'=>60]);
-                }elseif ( //v4
-                    $balance['balance']>=10000
-                    && $allSubMembers[$item_uid]['one']>=30
-                    && $allSubMembers[$item_uid]['two']>=20
-                    && $allSubMembers[$item_uid]['three']>=10){
-                    model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+4,'name'=>65]);
-                }elseif ( //v5
-                    $balance['balance']>=20000 && $balance['balance']<50000
-                    && $allSubMembers[$item_uid]['one']>=50
-                    && $allSubMembers[$item_uid]['two']>=30
-                    && $allSubMembers[$item_uid]['three']>=15){
-                    model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+5,'name'=>70]);
-                }elseif ( //v6
-                    $balance['balance']>=50000
-                    && $allSubMembers[$item_uid]['one']>=100
-                    && $allSubMembers[$item_uid]['two']>=50
-                    && $allSubMembers[$item_uid]['three']>=30){
-                    model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+6,'name'=>75]);
-                }
-            }
+            $this->upAllUpVip($orderInfo['uid']);
 
 			if(!$res2) return '操作失败2';
 
@@ -228,6 +160,82 @@ class UserRechargeModel extends Model{
 		return 1;
 	}
 
+	//自动升级所有上级VIP
+    //更新vip会员
+    /*
+     * V1会员。200起，不需要有下级会员，每天可以得到50个点赞。可以赚取到10到15卢比之间 。佣金比例%0.25
+     * V2会员。2000起 需要3个1级会员 每天可以得到55个点赞。赚取120到130之间佣金比例%0.28
+     * V3会员。5000起 需要5个2级会员。10个1级会员。每天60次订单。赚取400到450佣金比例%0.3
+     * V4会员。10000起，需要10个3级会员。20个2级会员。30个1级会员，每天65次点赞赚取900到950 。佣金比例%0.32
+     * V5会员。20000起 需要15个3级会员。30个20级会员。50个1级会员。每天70次点赞赚取1400到1500  佣金比例%0.36
+     * V6会员。50000起.需要30个3级会员。50个2级会员。100个1级会员。每天80次订单赚取4500到5000   佣金比例%0.4
+     * */
+	public function upAllUpVip($uid)
+    {
+        //要判断的当前用户及所有上级
+        $allUpUsers = $this->getAllUpVip($uid);
+        $allSubMembers = $this->getSubMembers($allUpUsers);
+        foreach ($allUpUsers as $item_uid){
+            $balance = model('UserTotal')->field('balance')->where('uid',$item_uid)->find();
+            $is_grade = model('UserVip')->where('uid',$item_uid)->field('grade')->find();
+            $username = model('Users')->where('uid',$item_uid)->value('username');
+            $updateData = [
+                'uid' => $item_uid,
+                'username' => $username,
+                'state' => 1,
+                'en_name' => 'Ordinary member',
+                'name' => '普通会员',
+                'ft_name' => 'Teradata',
+                'ry_name' => 'Teradata',
+                'ydn_name' => 'Teradata',
+                'xby_name' => 'Teradata',
+                'yn_name' => 'Teradata',
+                'ty_name' => 'Teradata',
+                'yd_name' => 'साधारण सदस्य',
+                'grade' => 2,
+                'stime' => time(),
+                'etime' => time()+3600*24*800,
+            ];
+            //var_dump($updateData);
+            if(!$is_grade){
+                $rid = model('UserVip')->insert($updateData);
+                //更新会员等级
+                model('Users')->where('id', $uid)->update(array('vip_level'=>$updateData['grade']));
+            }
+            if ($balance['balance']>=200){
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+1,'name'=>50]);
+            }elseif ( //v2
+                $balance['balance']>=2000
+                && $allSubMembers[$item_uid]['one']>=3
+            ){
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+2,'name'=>55]);
+            }elseif (  //v3
+                $balance['balance']>=5000
+                && $allSubMembers[$item_uid]['one']>=10
+                && $allSubMembers[$item_uid]['two']>=5){
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+3,'name'=>60]);
+            }elseif ( //v4
+                $balance['balance']>=10000
+                && $allSubMembers[$item_uid]['one']>=30
+                && $allSubMembers[$item_uid]['two']>=20
+                && $allSubMembers[$item_uid]['three']>=10){
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+4,'name'=>65]);
+            }elseif ( //v5
+                $balance['balance']>=20000 && $balance['balance']<50000
+                && $allSubMembers[$item_uid]['one']>=50
+                && $allSubMembers[$item_uid]['two']>=30
+                && $allSubMembers[$item_uid]['three']>=15){
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+5,'name'=>70]);
+            }elseif ( //v6
+                $balance['balance']>=50000
+                && $allSubMembers[$item_uid]['one']>=100
+                && $allSubMembers[$item_uid]['two']>=50
+                && $allSubMembers[$item_uid]['three']>=30){
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+6,'name'=>75]);
+            }
+        }
+    }
+
 	//获取当前及所有上级的用户
 	public function getAllUpVip($uid)
     {
@@ -250,20 +258,20 @@ class UserRechargeModel extends Model{
         foreach ($uids as $uid){
             //一级
             $upVipSubMembers[$uid]['one'] = 0;
-            $tmp_one = model('Users')->where('sid',$uid)->field('uid')->select();
+            $tmp_one = model('Users')->where('sid',$uid)->field('uid')->select()->toArray();
             empty($tmp_one) ? : $upVipSubMembers[$uid]['one'] = count($tmp_one);
             //二级
             $upVipSubMembers[$uid]['two'] = 0;
             if($upVipSubMembers[$uid]['one']>0){
                 $one_users = array_column($tmp_one,'uid');
-                $tmp_two = model('Users')->where('sid','in',$one_users)->field('uid')->select();
+                $tmp_two = model('Users')->where('sid','in',$one_users)->field('uid')->select()->toArray();
                 $upVipSubMembers[$uid]['two'] = count($tmp_two);
             }
             //三级
             $upVipSubMembers[$uid]['three'] = 0;
             if($upVipSubMembers[$uid]['two']>0){
                 $two_users = array_column($tmp_two,'uid');
-                $tmp_three = model('Users')->where('sid','in',$two_users)->field('uid')->select();
+                $tmp_three = model('Users')->where('sid','in',$two_users)->field('uid')->select()->toArray();
                 $upVipSubMembers[$uid]['three'] = count($tmp_three);
             }
         }

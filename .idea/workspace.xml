@@ -2,19 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a9513a1-227a-49ec-84d1-2d694ecec075" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/api/controller/CommonController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/controller/CommonController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/api/controller/SmsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/controller/SmsController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/api/controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/controller/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/api/model/TaskModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/model/TaskModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/api/model/UserTeamModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/model/UserTeamModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/api/model/UserVipModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/model/UserVipModel.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/api/model/UsersModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/model/UsersModel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/validate/Task.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/validate/Task.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/autumn/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/autumn/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/cml/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/cml/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/spring/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/spring/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/summer/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/summer/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/winter/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/winter/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/xml/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/xml/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/common/model/SmsModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/common/model/SmsModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/manage/controller/IndexController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/controller/IndexController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/manage/controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/controller/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/manage/model/UserRechargeModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/model/UserRechargeModel.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +26,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="PhpWorkspaceProjectConfiguration">
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/myclabs/php-enum" />
       <path value="$PROJECT_DIR$/vendor/composer" />
@@ -57,9 +55,19 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../dztg" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="Unnamed" type="PhpLocalRunConfigurationType" factoryName="PHP Console" nameIsGenerated="true">
+      <CommandLine>
+        <PhpTestInterpreterSettings>
+          <option name="interpreterName" value="PHP" />
+        </PhpTestInterpreterSettings>
+      </CommandLine>
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -73,7 +81,12 @@
       <workItem from="1608829783361" duration="5636000" />
       <workItem from="1608866260926" duration="38000" />
       <workItem from="1608867880691" duration="106000" />
-      <workItem from="1608872786838" duration="10708000" />
+      <workItem from="1608872786838" duration="11021000" />
+      <workItem from="1608897243104" duration="2899000" />
+      <workItem from="1608915223169" duration="1469000" />
+      <workItem from="1608916800492" duration="42040000" />
+      <workItem from="1608975024820" duration="2003000" />
+      <workItem from="1608982862815" duration="2194000" />
     </task>
     <servers />
   </component>
@@ -85,11 +98,54 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="main" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/main" />
+                </option>
+              </RecentGroup>
+            </list>
           </value>
         </entry>
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/application/api/model/UserTeamModel.php</url>
+          <line>146</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

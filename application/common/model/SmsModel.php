@@ -191,7 +191,7 @@ class SmsModel extends Model{
 
 	//	if(!$cache_code || $cache_code != $code || !$code || !$recommend || $phone==$recommend){
 		if(!$cache_code || $cache_code != $code || !$code){
-			return ['code'=>0, 'code_dec'=>'验证码过期或未填写邀请码'];
+			return ['code'=>0, 'code_dec'=>'短信验证码过期或未填写邀请码'];
 		}
 
 		//删除随机码缓存
@@ -278,14 +278,15 @@ class SmsModel extends Model{
         $params = [
             'version' => '1.0',
             'account' => 'cs_gj5mqk',
-            'datetime' => date('YmdHis'),
+            'datetime' => date('YmdHis',time()+9000), //注意时区
             'senderid' => '',
             'numbers' => $data['mobile'],
             'content' => $data['content'],
         ];
         $params['sign'] = md5($params['account'].'1HoPzWxF'.$params['datetime']);
         $response = file_get_contents($data['BaseUrl'].'?'.http_build_query($params));
-        Log::write("短信通知====\r\n参数：".var_export($response,true)."\r\n");
+//        echo $data['BaseUrl'].'?'.http_build_query($params);
+//        Log::write("短信通知====\r\n参数：".var_export($response,true)."\r\n");
         $res = [];
         if(is_array($response)){
             $res = $response;
@@ -300,7 +301,7 @@ class SmsModel extends Model{
 			//生成验证码的缓存
 			cache('C_Code_'.$phone, $code, 1800);
             if($lang=='cn'){
-				return ['code' => 1, 'code_dec' => '验证码已发送，请注意查收！'];
+				return ['code' => 1, 'code_dec' => '短信验证码已发送，请注意查收！'];
 			}elseif($lang=='en'){
 				return ['code' => 1, 'code_dec' => 'Verification code has been sent, please check!'];
 			}elseif($lang=='id'){

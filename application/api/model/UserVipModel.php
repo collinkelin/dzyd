@@ -16,7 +16,7 @@ class UserVipModel extends Model{
 	
 	// 用户购买vip
 	public function userBuyVip(){
-		
+
 		$param		= input('post.');
 		$userArr	= explode(',',auth_code($param['token'],'DECODE'));
 		$uid		= $userArr[0];
@@ -174,17 +174,22 @@ class UserVipModel extends Model{
 						return ['code' => 2, 'code_dec' => 'ยอดผู้ใช้ไม่เพียงพอ'];
 					}
 		}
-		
+
+        //判断团队人数是否满足条件
+        $is_meet = $this->isMeetNumber($uid,$grade,$lang);
+        if($is_meet!==true){
+            return $is_meet;
+        }
 		if($in){
-			$is_in	= 	$this->insertGetId($newData);//添加会员
+            $is_in	= 	$this->insertGetId($newData);//添加会员
 		}else{
-			$is_up	=	$this->where('id' , $uservipdata['id'])->update($arr1);
-		}
+            $is_up	=	$this->where('id' , $uservipdata['id'])->update($arr1);
+        }
 		
 		$is = $is_up + $is_in;
 		if(!$is){
 			if($is_in){
-				$this->where('id', $new_id)->delete();
+				$this->where('id', $newData)->delete();
 			}
 			if($is_up){
 				//更新结束时间
@@ -202,8 +207,13 @@ class UserVipModel extends Model{
 					'stime'		=>	$uservipdata['stime'],
 					'etime'		=>	$uservipdata['etime'],
 				);
-				$this->where('id' , $uservipdata['id'])->update($arr3);
-			}
+				//判断团队人数是否满足条件
+                $is_meet = $this->isMeetNumber($uid,$grade,$lang);
+                if($is_meet!==true){
+                    return $is_meet;
+                }
+                $this->where('id' , $uservipdata['id'])->update($arr3);
+            }
 			if($lang=='cn'){
 				return ['code' => 0, 'code_dec' => 'VIP充值失败'];
 			}elseif($lang=='en'){
@@ -225,12 +235,12 @@ class UserVipModel extends Model{
 					}
 		}
 
-		// 扣减用户汇总表的用户余额
+		// 扣减用户汇总表的用户余额 [此版本不扣减]
 
 
 		// 流水
 		$order_number = 'B'.trading_number();
-		$trade_number = 'L'.trading_number();
+		/*$trade_number = 'L'.trading_number();
 		
 		$financial_data['uid'] 						= $uid;
 		$financial_data['username'] 				= $username;
@@ -243,13 +253,13 @@ class UserVipModel extends Model{
 		$financial_data['remarks'] 					= '购买VIP';
 		$financial_data['types'] 					= 1;	// 用户1，商户2
 
-		model('TradeDetails')->tradeDetails($financial_data);
+		model('TradeDetails')->tradeDetails($financial_data);*/
 		
 		//更新会员等级
 		model('Users')->where('id', $uid)->update(array('vip_level'=>$grade));
 		
 		//减去会员的余额
-		model('UserTotal')->where('uid', $uid)->setDec('balance', $amount);
+//		model('UserTotal')->where('uid', $uid)->setDec('balance', $amount);
 		
 		//推荐返佣
 		$userinfo = model('Users')->where('id', $uid)->find();
@@ -290,7 +300,82 @@ class UserVipModel extends Model{
 						return ['code' => 1, 'code_dec' => 'วีไอพีชาร์จเรียบร้อยแล้ว'];
 					}
 	}
-	
+
+    /*
+     * V1会员。200起，不需要有下级会员，每天可以得到50个点赞。可以赚取到10到15卢比之间 。佣金比例%0.25
+     * V2会员。2000起 需要3个1级会员 每天可以得到55个点赞。赚取120到130之间佣金比例%0.28
+     * V3会员。5000起 需要5个2级会员。10个1级会员。每天60次订单。赚取400到450佣金比例%0.3
+     * V4会员。10000起，需要10个3级会员。20个2级会员。30个1级会员，每天65次点赞赚取900到950 。佣金比例%0.32
+     * V5会员。20000起 需要15个3级会员。30个20级会员。50个1级会员。每天70次点赞赚取1400到1500  佣金比例%0.36
+     * V6会员。50000起.需要30个3级会员。50个2级会员。100个1级会员。每天80次订单赚取4500到5000   佣金比例%0.4
+     * */
+	//满足升级VIP条件的人数
+    public function isMeetNumber($uid,$grade,$lang){
+        $levels['cn'] = [
+            4 => '需要3个1级会员',
+            5 => '需要5个2级会员。10个1级会员',
+            6 => '需要10个3级会员。20个2级会员。30个1级会员.',
+            7 => '需要15个3级会员。30个20级会员。50个1级会员',
+            8 => '需要30个3级会员。50个2级会员。100个1级会员',
+        ];
+        $levels['yd'] = [
+            4 => '3 स्तर 1 सदस्यों की आवश्यकता है',
+            5 => '5 स्तर 2 सदस्यों की आवश्यकता है। 10 स्तर 1 सदस्य',
+            6 => '10 स्तर 3 सदस्यों की आवश्यकता है। 20 स्तर 2 सदस्य। 30 स्तर 1 सदस्य।',
+            7 => '15 स्तर 3 सदस्यों की आवश्यकता है। 30 20-स्तरीय सदस्य। 50 स्तर 1 सदस्य',
+            8 => '30 स्तर 3 सदस्यों की आवश्यकता है। 50 स्तर 2 सदस्य। 100 स्तर 1 सदस्य',
+        ];
+        $levels['en'] = [
+            4 => 'Need 3 level 1 members',
+            5 => 'Need 5 level 2 members are required. 10 level 1 members',
+            6 => 'Need 10 level 3 members are required. 20 level 2 members. 30 level 1 members.',
+            7 => 'Need 15 level 3 members are required. 30 20-level members. 50 level 1 members',
+            8 => 'Need 30 level 3 members. 50 level 2 members. 100 level 1 members',
+        ];
+
+        if($grade<4){
+            return true;
+        }
+        //所有下级成员
+        $allSubMembers = model('manage/UserRecharge')->getSubMembers([$uid]);
+        if($grade==4){
+            if($allSubMembers[$uid]['one']>=3){
+                return true;
+            }
+        }
+        if($grade==5){
+            if($allSubMembers[$uid]['one']>=10 && $allSubMembers[$uid]['two']>=5){
+                return true;
+            }
+        }
+        if($grade==6){
+            if($allSubMembers[$uid]['one']>=30
+                && $allSubMembers[$uid]['two']>=20
+                && $allSubMembers[$uid]['three']>=10){
+                return true;
+            }
+        }
+        if($grade==7){
+            if($allSubMembers[$uid]['one']>=50
+                && $allSubMembers[$uid]['two']>=30
+                && $allSubMembers[$uid]['three']>=15){
+                return true;
+            }
+        }
+        if($grade==8){
+            if($allSubMembers[$uid]['one']>=100
+                && $allSubMembers[$uid]['two']>=50
+                && $allSubMembers[$uid]['three']>=30){
+                return true;
+            }
+        }
+
+        if(!in_array($lang,['en','cn','yd'])){
+            return ['code' => 0, 'code_dec' => $levels['en'][$grade]];
+        }else{
+            return ['code' => 0, 'code_dec' => $levels[$lang][$grade]];
+        }
+    }
 	
 	// 获取用户购买vip记录列表
 	public function getUserBuyVipList(){

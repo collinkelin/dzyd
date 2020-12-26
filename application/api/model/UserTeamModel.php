@@ -106,9 +106,6 @@ class UserTeamModel extends UT{
         $data['teamRechargeCount'] = 0;
 		$data['teamRechargeNumber'] = 0;
 		$data['teamSpreadSum'] = 0;
-		$data['team1'] = ['teamRechargeCount'=>2000,'teamRechargeNumber'=>0,'teamSpreadSum'=>0,];
-		$data['team2'] = ['teamRechargeCount'=>0,'teamRechargeNumber'=>0,'teamSpreadSum'=>0,];
-		$data['team3'] = ['teamRechargeCount'=>0,'teamRechargeNumber'=>0,'teamSpreadSum'=>0,];
 		// // 当天开始时间
 		// $startTime = $endDate - ($endDate - strtotime(date('Y-m-d',$endDate)));
 
@@ -166,10 +163,9 @@ class UserTeamModel extends UT{
         $data['team2']['teamRechargeNumber'] = count($merchant2_users);
         $data['team3']['teamRechargeNumber'] = count($merchant3_users);
         //充值返佣
-        $data['team1']['teamSpreadSum'] = model('common/TradeDetails')->where('sid','in',$merchant1_users)->where('trade_type','in',[5,6])->sum('trade_amount');
-        $data['team2']['teamSpreadSum'] = model('common/TradeDetails')->where('sid','in',$merchant2_users)->where('trade_type','in',[5,6])->sum('trade_amount');
-        $data['team3']['teamSpreadSum'] = model('common/TradeDetails')->where('sid','in',$merchant3_users)->where('trade_type','in',[5,6])->sum('trade_amount');
-        
+        !empty($merchant1_users) && $data['team1']['teamSpreadSum'] = model('common/TradeDetails')->where('sid','in',$merchant1_users)->where('trade_type','in',[5,6])->sum('trade_amount');
+        !empty($merchant2_users) && $data['team2']['teamSpreadSum'] = model('common/TradeDetails')->where('sid','in',$merchant2_users)->where('trade_type','in',[5,6])->sum('trade_amount');
+        !empty($merchant3_users) && $data['team3']['teamSpreadSum'] = model('common/TradeDetails')->where('sid','in',$merchant3_users)->where('trade_type','in',[5,6])->sum('trade_amount');
 		return $data;
 	}
 	

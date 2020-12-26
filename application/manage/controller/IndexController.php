@@ -50,8 +50,8 @@ class IndexController extends Controller{
         $txtodaye = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[strtotime(date('Y-m-d')),time()])->sum('price');
         $txzte = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[$yes1,$yes2])->sum('price');
         
-        //用户余额
-        $userzonge = model('user_total')->sum('balance'); 
+        //会员余额
+        $userzonge = model('user_total')->where()->sum('balance');
 
 			return view('index', [
 				'title'          => $setting['manage_title'],

@@ -299,12 +299,31 @@ class UserController extends CommonController{
 
 		return view();
 	}
+
+	//递归查子孙
+	public static function getTree($user)
+    {
+        static $tree;
+        $subs = model('Users')->field('id,username as title,sid as field')->where('sid',$user['id'])->select()->toArray();
+        !isset($tree) && $tree = [$user];
+        foreach($subs as $key => $sub)
+        {
+            $tree[] = $sub;
+            unset($subs[$key]);
+            self::getTree($sub);
+        }
+        return $tree;
+    }
+
 	/**
 	 * 关系树
 	 */
 	public function relation(){
 		if (request()->isAjax()) {
-			$param = input('param.');
+		    /*$user = model('Users')->field('id,username as title,sid as field')->where('id',206)->find()->toArray();
+            $treedata = $this->getTree($user);
+            var_dump($treedata);exit;*/
+            $param = input('param.');
 
 			$newUser = model('Users')->alias('u')->field('u.id,username as title,sid as field');
 
@@ -312,9 +331,26 @@ class UserController extends CommonController{
 			if (isset($param['username']) && $param['username']) {
 				// $where[] = ['username', 'like', '%'.$param['username'].'%'];
 				$newUser->join('user_team','u.id=user_team.team');
-				$newUser->where('username', 'like', '%'.$param['username'].'%');
+//				$newUser->where('username', 'like', '%'.$param['username'].'%');
+                $newUser = $newUser->where('username', 'like', '%'.$param['username'].'%');
+//                $newUser = $newUser->where('username', '=', $param['username']);
 			}
+
 			$array = $newUser->select()->toArray();
+
+            if (isset($param['username']) && $param['username']) {
+                $array_re = [];
+                foreach ($array as $item){
+                    $tmp = self::getTree($item);
+                    foreach ($tmp as $a){
+                        $array_re[] = $a;
+                    }
+                    unset($tmp);
+                }
+                $array = $array_re;
+            }
+
+
 			if (!$array) return json(['code'=>0, 'data'=>[], 'msg'=>'查无此人']);
 
 			$res  = [];
@@ -328,24 +364,23 @@ class UserController extends CommonController{
 			unset($array);
 
 			//查询子孙
-			foreach($res as $key=>$value){
-				if($value['field'] != 0){
-					$res[$value['field']]['children'][] = &$res[$key];
+			foreach($res as $key1=>$value1){
+				if($value1['field'] != 0){
+					$res[$value1['field']]['children'][] = &$res[$key1];
 				}
 			}
 
 			//去除杂质
-			foreach($res as $key=>$value){
-				if (!isset($value['title'])) {
-					unset($res[$key]);
+			foreach($res as $key2=>$value2){
+				if (!isset($value2['title'])) {
+					unset($res[$key2]);
 					continue;
 				}
-				if($value['field'] == 0){
-					$tree[] = $value;
+				if($value2['field'] == 0){
+					$tree[] = $value2;
 				}
 			}
 			unset($res);
-
 			return json(['code'=>1, 'data'=>$tree, 'msg'=>'ok']);
 		}
 

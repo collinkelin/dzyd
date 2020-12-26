@@ -16,23 +16,23 @@ class UsersModel extends Model{
 		// 新用户信息		
 		$username		= $param['username'];		// 用户名
 		$password		= input('post.password/s');	// 密码
-		$smscode		= input('post.smscode/d');	// 验证码
+		$smscode		= input('post.smscode/d');	// 短信验证码
 		//$dest			= (input('post.dest')) ? input('post.dest') : 86;	// 国家区号
 		$dest			= 91;	// 国家区号
 		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
 		
-// 		if($smscode){
-// 			$cachesmscode	= cache('C_Code_'.$username);		
-// 			if(!$smscode)   return ['code'=>0,'code_dec'=>'请输入验证码'];
-// 			if($cachesmscode != $smscode){
-// 				$data['code'] = 0;
-// 				if($lang=='cn')	$data['code_dec'] = '验证码错误';
-// 				else $data['code_dec'] = 'Verification code error!';
-// 				return $data;
-// 			}
-// 			//删除验证码缓存
-// 			cache('C_Code_'.$username, NULL);
-// 		}else{
+ 		if($smscode){
+ 			$cachesmscode	= cache('C_Code_'.$username);
+ 			if(!$smscode)   return ['code'=>0,'code_dec'=>'请输入验证码'];
+ 			if($cachesmscode != $smscode){
+ 				$data['code'] = 0;
+ 				if($lang=='cn')	$data['code_dec'] = '短信验证码错误';
+ 				else $data['code_dec'] = 'Verification code error!';
+ 				return $data;
+ 			}
+ 			//删除验证码缓存
+ 			cache('C_Code_'.$username, NULL);
+ 		}else{
 			
 			$code_rand		= (input('post.code_rand')) ? input('post.code_rand') : '';// 随机码
 			$code			= (input('post.code')) ? input('post.code') : '';// 验证码
@@ -52,7 +52,7 @@ class UsersModel extends Model{
 			}
 			cache('C_Code_'.$code_rand, NULL);
 
-// 		}
+ 		}
 		//密码是否一致
 		$re_password	=	input('post.re_password/s');	// 密码
 		
@@ -614,8 +614,13 @@ class UsersModel extends Model{
 	
 	//收益计算
 	public function earnings($param){
-		
-		$t = time();
+        $timezone = config('default_timezone');
+        if($timezone=='Asia/Kolkata'){
+            $t = time()+9000;
+        }else{
+            $t = time();
+        }
+        //$t = time()+9000;
 		switch($param['type']){
 			case 'today_f_num':
 				$start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
@@ -631,6 +636,8 @@ class UsersModel extends Model{
 			break;
 			case 'today_o_num'://今天完成的次数
 				$start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
+				$res = model('UserDaily')->where(array(['uid','=',$param['uid']],['date','=',$start]))->value('w_t_o_n');
+//                echo model('UserDaily')->getLastSql();
 				return model('UserDaily')->where(array(['uid','=',$param['uid']],['date','=',$start]))->value('w_t_o_n');
 				//$end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
 				//return model('UserTask')->where(array(['uid','=',$param['uid']],['status','=',3],['complete_time','>=',$start],['complete_time','<=',$end]))->count();
@@ -991,7 +998,7 @@ class UsersModel extends Model{
 		$data['info']['week_earnings']  				= round($this->earnings(array('type'=>'week_earnings','uid'=>$userinfo['id'])),3);//本周收益
 		$data['info']['month_earnings']  				= round($this->earnings(array('type'=>'month_earnings','uid'=>$userinfo['id'])),3);//本月收益
 		$data['info']['last_month_earnings']  			= round($this->earnings(array('type'=>'last_month_earnings','uid'=>$userinfo['id'])),3);//上月收益
-		$data['info']['today_o_num']  					= $this->earnings(array('type'=>'today_o_num','uid'=>$userinfo['id']));//今日完成
+		$data['info']['today_o_num']  					= $this->earnings(array('type'=>'today_o_num','uid'=>$userinfo['id']));//今日完成任务单量
 		$data['info']['today_s_o_num']  				= $UserGrade['number'] - $this->earnings(array('type'=>'today_j_num','uid'=>$userinfo['id']));//今日剩余任务(单)
 		$data['info']['total_profit']  					= round($this->earnings(array('type'=>'total_profit','uid'=>$userinfo['id'])),3);//总收益
 		 
