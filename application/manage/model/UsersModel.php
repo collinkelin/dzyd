@@ -7,6 +7,7 @@
 
 namespace app\manage\model;
 
+use think\facade\Request;
 use think\Model;
 use app\api\model\ApiModel;
 
@@ -115,7 +116,6 @@ class UsersModel extends Model{
 	 */
 	public function add(){
 		$param = input('post.');
-
 		//数据验证
 		$validate = validate('app\manage\validate\Users');
 		if(!$validate->scene('add')->check($param)){
@@ -136,7 +136,7 @@ class UsersModel extends Model{
 		$param['idcode']   		= $newIdcode;
 		$param['phone']    		= $param['username'];
 		$param['password'] 		= auth_code($param['password'],'ENCODE');
-		$param['header'] 		= 'head_1.png';
+		$param['header'] 		= Request::domain().'/xml/static/head/head_1.png';
 		$param['vip_level'] 	= 1;
 		$param['credit'] 		= 60;
 		$param['reg_time'] 		= time();
