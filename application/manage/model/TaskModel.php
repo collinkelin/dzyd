@@ -567,7 +567,7 @@ class TaskModel extends Model{
 				$rebate_amount	=	round($param['commission']*($rebate/100),2);
 
 				if($rebate_amount>0){
-					$userinfo = model('Users')->field('ly_users.id,ly_users.vip_level,ly_users.username,ly_users.sid,user_total.balance')->join('user_total','ly_users.id=user_total.uid')->where('ly_users.id', $param['sid'])->find();
+					$userinfo = model('Users')->field('ly_users.id,ly_users.vip_level,ly_users.username,ly_users.sid,user_total.balance')->join('user_total','ly_users.id=user_total.uid')->where('ly_users.id', $param['sid'])->where('ly_users.user_type','>',1)->find();
 
 					if($userinfo){
 

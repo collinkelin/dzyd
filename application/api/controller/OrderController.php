@@ -40,7 +40,7 @@ class OrderController extends BaseController{
             if(!empty($callback_order)){
                 model('manage/UserRecharge')->rechargeDispose($callback_order);
             }
-            model('UserWithdrawals')->where('order_number',$data_arr['sh_order'])->setField('state',1);
+            //model('UserWithdrawals')->where('order_number',$data_arr['sh_order'])->setField('state',1);
             echo 'success';die;
         }
         echo 'failed';die;

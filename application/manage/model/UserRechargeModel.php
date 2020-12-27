@@ -179,7 +179,7 @@ class UserRechargeModel extends Model{
         foreach ($allUpUsers as $item_uid){
             $balance = model('UserTotal')->field('balance')->where('uid',$item_uid)->find();
             $is_grade = model('UserVip')->where('uid',$item_uid)->field('grade')->find();
-            $username = model('Users')->where('id',$item_uid)->value('username');
+            $username = model('Users')->where('id',$item_uid)->where('user_type','>',1)->value('username');
             $updateData = [
                 'uid' => $item_uid,
                 'username' => $username,
@@ -240,7 +240,7 @@ class UserRechargeModel extends Model{
 	//获取当前及所有上级的用户
 	public function getAllUpVip($uid)
     {
-        $svip = model('Users')->where('id',$uid)->field('sid')->find();
+        $svip = model('Users')->where('id',$uid)->where('user_type','>',1)->field('sid')->find();
         $sid = !$svip ? 0 : $svip['sid'];
         if(!isset($upVipUsers)){
             $upVipUsers = [$uid];

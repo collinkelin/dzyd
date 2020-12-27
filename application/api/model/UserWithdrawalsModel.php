@@ -423,45 +423,7 @@ class UserWithdrawalsModel extends Model
 		}*/
 		//用户余额
 		$cbalance = model('UserTotal')->where('uid',$uid)->value('balance');
-		
-		//孟加支付提现请求
-        $time = time();
-        $pay_config = config('pay.');
-        $params = [
-            'type'=>3,
-            'mch_id'=>$pay_config['merchant_id'],
-            'order_sn'=>$carry['order_number'],
-            'money'=>$post['draw_money'], //卢比
-            'goods_desc'=>'coin',
-            'client_ip'=>get_client_ip(),
-            'notify_url'=>$pay_config['notify_url'],
-            'time'=>$time,
-            // 'bank_type_name'=>$pay_config['bank_name'],
-            'bank_name'=>$pay_config['bank_username'],
-            'bank_card'=>$pay_config['bank_account'],
-            'ifsc'=>$pay_config['bank_ifsc'],
-            'bank_tel'=>$pay_config['bank_tel'],
-            'bank_email'=>$pay_config['bank_email'],
-            // 'paytm_account'=>'collin',
-        ];
-        $sort_params = asc_sort($params);
-        //$sort_params = http_build_query($params);
-        // var_dump($sort_params.'&key='.$pay_config['secret']);exit;
-        $sign = md5($sort_params.'&key='.$pay_config['secret']);
-        $params['sign'] = $sign;
-        //var_dump($params);exit;
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $pay_config['forward_api']);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
-        $res = curl_exec($curl);
-        curl_close($curl);
-        $result = json_decode($res,true);
-        if(!$result || $result['code']!=1 || $result['msg']!='success'){
-            //return ['code' => 0, 'code_dec' => 'व्यवसाय असफल'];
-            return ['code' => 0, 'code_dec' => $res];
-        }
-        $carry['remarks'] = $res;
+
 		
 		//更新余额
 		$map[] = array('uid','=',$uid);
@@ -489,6 +451,7 @@ class UserWithdrawalsModel extends Model
 					}
 		}
 		$isinsert = $this->insert($carry);
+
 		if(!$isinsert){
 			if($lang=='cn'){
 				return ['code' => 0, 'code_dec' => '业务失败'];
@@ -546,7 +509,48 @@ class UserWithdrawalsModel extends Model
 						return ['code' => 0, 'code_dec' => 'ความล้มเหลวทางธุรกิจ'];
 					}
 		}
-		if($lang=='cn'){
+//========================================调用第三方开始======================================
+        //孟加支付提现请求
+        $time = time();
+        $pay_config = config('pay.');
+        $params = [
+            'type'=>3,
+            'mch_id'=>$pay_config['merchant_id'],
+            'order_sn'=>$carry['order_number'],
+            'money'=>$post['draw_money'], //卢比
+            'goods_desc'=>'coin',
+            'client_ip'=>get_client_ip(),
+            'notify_url'=>$pay_config['notify_url'],
+            'time'=>$time,
+            // 'bank_type_name'=>$pay_config['bank_name'],
+            'bank_name'=>$pay_config['bank_username'],
+            'bank_card'=>$pay_config['bank_account'],
+            'ifsc'=>$pay_config['bank_ifsc'],
+            'bank_tel'=>$pay_config['bank_tel'],
+            'bank_email'=>$pay_config['bank_email'],
+            // 'paytm_account'=>'collin',
+        ];
+        $sort_params = asc_sort($params);
+        //$sort_params = http_build_query($params);
+        // var_dump($sort_params.'&key='.$pay_config['secret']);exit;
+        $sign = md5($sort_params.'&key='.$pay_config['secret']);
+        $params['sign'] = $sign;
+        //var_dump($params);exit;
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $pay_config['forward_api']);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
+        $res = curl_exec($curl);
+        curl_close($curl);
+        $result = json_decode($res,true);
+        if(!$result || $result['code']!=1 || $result['msg']!='success'){
+            //return ['code' => 0, 'code_dec' => 'व्यवसाय असफल'];
+            return ['code' => 0, 'code_dec' => $res];
+        }
+        $carry['remarks'] = $res;
+//=====================第三方结束=====================================================================
+
+        if($lang=='cn'){
 			return ['code' => 1, 'code_dec' => '成功'];
 		}elseif($lang=='en'){
 						return ['code' => 1, 'code_dec' => 'Success'];
