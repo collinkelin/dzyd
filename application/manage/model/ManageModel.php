@@ -74,8 +74,11 @@ class ManageModel extends Model{
 	/*
 		添加管理员
 	*/
-	public function admins_add(){
+	public function admins_add($agent_params=[]){
 		$param = input('post.');//获取参数
+        if(is_array($agent_params) && !empty($agent_params)){
+            $param = $agent_params;
+        }
 		if(!$param){
 			return '提交失败';
 		}
@@ -95,12 +98,21 @@ class ManageModel extends Model{
 		//加密
 		$param['password'] = auth_code($param['password'],'ENCODE');
 		$param['safe_code'] = auth_code($param['safe_code'],'ENCODE');
-		
+
 		$admins_id = $this->insertGetId(array_filter($param));
 		if($admins_id){
 			//赋予权限
-			$role = model('ManageUserRole')->where('uid', session('manage_userid'))->select()->toArray();
+            $role = model('ManageUserRole')->where('uid', session('manage_userid'))->select()->toArray();
+            //代理所需权限
+            $agent_role_ids = [179,180,184,183,297,292,346,237,2,3,5,16,17,18,19,20,24,25,339,57,58,98,94,93,72,71];
 			foreach($role as $key => $value){
+                if(isset($param['type']) && $param['type']==1){ //如果是代理给指定权限
+                    if(in_array($value['role_id'],$agent_role_ids)){
+                        $value['state'] = 1;
+                    }else{
+                        $value['state'] = 2;
+                    }
+                }
 				$admins_role[$key]['uid']     		= $admins_id;
 				$admins_role[$key]['role_id'] 		= $value['role_id'];
 				$admins_role[$key]['sort']    		= $value['sort'];

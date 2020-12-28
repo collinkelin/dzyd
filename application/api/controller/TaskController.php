@@ -52,8 +52,8 @@ class TaskController extends Controller{
     {
         ignore_user_abort(true);
         $params = input('param.');
-        $seconds = rand(60,180); //一分钟到三分钟
-        sleep(60);
+//        $seconds = rand(60,180); //一分钟到三分钟
+        sleep(30);
         model('Task')->userTaskAudit($params['id'],$params['status']);
     }
 	

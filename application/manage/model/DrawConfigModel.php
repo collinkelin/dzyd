@@ -76,7 +76,7 @@ class DrawConfigModel extends Model{
 	 * 开关
 	 * @return [type] [description]
 	 */
-	public function switch(){
+	public function _switch_(){
 		if (!request()->isAjax()) return '提交失败';
 		$param = input('param.');
 		if (!$param) return '提交失败';

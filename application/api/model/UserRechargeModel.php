@@ -89,7 +89,7 @@ class UserRechargeModel extends Model
             $pay_config = config('pay.');
             $params = [
                 'mch_id'=>$pay_config['merchant_id'],
-                'ptype'=>3,//
+//                'ptype'=>3,//
                 'order_sn'=>$orderNumber,
                 'money'=>$insertArray['money'], //卢比
                 'goods_desc'=>'recharge',
@@ -166,7 +166,21 @@ class UserRechargeModel extends Model
 		}
 
 		$data['code']        = 1;
-		$data['code_dec']    = '充值申请提交成功';
+		if(isset($result['url'])){
+            $data['url']         = $result['url']; //直接跳转第三方支付页面
+        }
+		$data['code_dec']    = 'The recharge application is submitted successfully';
+        if($lang=='cn'){
+            $data['code_dec']    = '充值申请提交成功';
+        }elseif($lang=='en'){
+            $data['code_dec']    = 'The recharge application is submitted successfully';
+        }elseif($lang=='id'){
+            $data['code_dec']    = 'रिचार्ज एप्लिकेशन को सफलतापूर्वक सबमिट किया गया है';
+        }elseif($lang=='yd'){
+            $data['code_dec']    = 'रिचार्ज एप्लिकेशन को सफलतापूर्वक सबमिट किया गया है';
+        }elseif($lang=='yny'){
+            $data['code_dec']    = 'Aplikasi isi ulang berhasil dikirim';
+        }
 		$data['orderNumber'] = $orderNumber;
 		$data['money']       = $param['money'];
 		$data['date']        = date('Y-m-d');

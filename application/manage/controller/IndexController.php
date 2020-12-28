@@ -16,72 +16,78 @@ class IndexController extends Controller{
 		$setting = model('Setting')->getFieldsById('manage_title');
 		
 		if($is_admin_login){
-			//获取用户权限
-			$adminRole = model('ManageUserRole')->getAdminsRoleByUsersId(session('manage_userid'));
+            $manage_info = model('Manage')->where('id',session('manage_userid'))->find();
+            if($manage_info['type']==1){
+                 return $this->index_agent($setting,$manage_info);
+            }else{
+                //获取用户权限
+                $adminRole = model('ManageUserRole')->getAdminsRoleByUsersId(session('manage_userid'));
 
-        $yes1 = strtotime( date("Y-m-d 00:00:00",strtotime("-1 day")) );
-        $yes2 = strtotime( date("Y-m-d 23:59:59",strtotime("-1 day")) );	
-        //用户
-        $userzong = model('Users')->count(); 
-        $usertoday = model('Users')->where('reg_time','between',[strtotime(date('Y-m-d')),time()])->count(); 
-        $userzt = model('Users')->where('reg_time','between',[$yes1,$yes2])->count(); 
-        //购买VIP
-        $vipzong = model('trade_details')->where(array(['trade_type','=',9]))->count(); 
-        $viptoday = model('trade_details')->where(array(['trade_type','=',9]))->where('trade_time','between',[strtotime(date('Y-m-d')),time()])->count();
-        $vipzt = model('trade_details')->where(array(['trade_type','=',9]))->where('trade_time','between',[$yes1,$yes2])->count();
-        //下单
-        $xiadzong = model('user_task')->count(); 
-        $xiadtoday = model('user_task')->where('add_time','between',[strtotime(date('Y-m-d')),time()])->count(); 
-        $xiadzt = model('user_task')->where('add_time','between',[$yes1,$yes2])->count(); 
-        //充值人
-        $czzong = model('user_recharge')->where(array(['state','=',1]))->count(); 
-        $cztoday = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[strtotime(date('Y-m-d')),time()])->count();
-        $czzt = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[$yes1,$yes2])->count();
-        //充值总额
-        $czzonge = model('user_recharge')->where(array(['state','=',1]))->sum('money'); 
-        $cztodaye = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[strtotime(date('Y-m-d')),time()])->sum('money');
-        $czzte = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[$yes1,$yes2])->sum('money');
-        //提现人
-        $txzong = model('user_withdrawals')->where(array(['state','=',1]))->count(); 
-        $txtoday = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[strtotime(date('Y-m-d')),time()])->count();
-        $txzt = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[$yes1,$yes2])->count();
-        //提现总额
-        $txzonge = model('user_withdrawals')->where(array(['state','=',1]))->sum('price'); 
-        $txtodaye = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[strtotime(date('Y-m-d')),time()])->sum('price');
-        $txzte = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[$yes1,$yes2])->sum('price');
-        
-        //会员余额
-        $userzonge = model('user_total')->where()->sum('balance');
+                $yes1 = strtotime( date("Y-m-d 00:00:00",strtotime("-1 day")) );
+                $yes2 = strtotime( date("Y-m-d 23:59:59",strtotime("-1 day")) );
+                //用户
+                $userzong = model('Users')->count();
+                $usertoday = model('Users')->where('reg_time','between',[strtotime(date('Y-m-d')),time()])->count();
+                $userzt = model('Users')->where('reg_time','between',[$yes1,$yes2])->count();
+                //购买VIP
+                $vipzong = model('trade_details')->where(array(['trade_type','=',9]))->count();
+                $viptoday = model('trade_details')->where(array(['trade_type','=',9]))->where('trade_time','between',[strtotime(date('Y-m-d')),time()])->count();
+                $vipzt = model('trade_details')->where(array(['trade_type','=',9]))->where('trade_time','between',[$yes1,$yes2])->count();
+                //下单
+                $xiadzong = model('user_task')->count();
+                $xiadtoday = model('user_task')->where('add_time','between',[strtotime(date('Y-m-d')),time()])->count();
+                $xiadzt = model('user_task')->where('add_time','between',[$yes1,$yes2])->count();
+                //充值人
+                $czzong = model('user_recharge')->where(array(['state','=',1]))->count();
+                $cztoday = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[strtotime(date('Y-m-d')),time()])->count();
+                $czzt = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[$yes1,$yes2])->count();
+                //充值总额
+                $czzonge = model('user_recharge')->where(array(['state','=',1]))->sum('money');
+                $cztodaye = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[strtotime(date('Y-m-d')),time()])->sum('money');
+                $czzte = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[$yes1,$yes2])->sum('money');
+                //提现人
+                $txzong = model('user_withdrawals')->where(array(['state','=',1]))->count();
+                $txtoday = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[strtotime(date('Y-m-d')),time()])->count();
+                $txzt = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[$yes1,$yes2])->count();
+                //提现总额
+                $txzonge = model('user_withdrawals')->where(array(['state','=',1]))->sum('price');
+                $txtodaye = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[strtotime(date('Y-m-d')),time()])->sum('price');
+                $txzte = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[$yes1,$yes2])->sum('price');
 
-			return view('index', [
-				'title'          => $setting['manage_title'],
-				'admin_username' => session('manage_username'),
-				'admin_userid'   => session('manage_userid'),
-				'adminRole'      => $adminRole,
-				'userzong'      => $userzong,
-				'usertoday'      => $usertoday,
-				'userzt'      => $userzt,
-				'vipzong'      => $vipzong,
-				'viptoday'      => $viptoday,
-				'vipzt'      => $vipzt,
-				'xiadzong'      => $xiadzong,
-				'xiadtoday'      => $xiadtoday,
-				'xiadzt'      => $xiadzt,
-				'czzong'      => $czzong,
-				'cztoday'      => $cztoday,
-				'czzt'      => $czzt,
-				'czzonge'      => $czzonge,
-				'cztodaye'      => $cztodaye,
-				'czzte'      => $czzte,
-				
-				'txzong'      => $txzong,
-				'txtoday'      => $txtoday,
-				'txzt'      => $txzt,
-				'txzonge'      => $txzonge,
-				'txtodaye'      => $txtodaye,
-				'txzte'      => $txzte,
-				'userzonge'      => $userzonge,
-			]);
+                //会员余额
+                $userzonge = model('user_total')->sum('balance');
+
+                return view('index', [
+                    'title'          => $setting['manage_title'],
+                    'admin_username' => session('manage_username'),
+                    'admin_userid'   => session('manage_userid'),
+                    'adminRole'      => $adminRole,
+                    'userzong'      => $userzong,
+                    'usertoday'      => $usertoday,
+                    'userzt'      => $userzt,
+                    'vipzong'      => $vipzong,
+                    'viptoday'      => $viptoday,
+                    'vipzt'      => $vipzt,
+                    'xiadzong'      => $xiadzong,
+                    'xiadtoday'      => $xiadtoday,
+                    'xiadzt'      => $xiadzt,
+                    'czzong'      => $czzong,
+                    'cztoday'      => $cztoday,
+                    'czzt'      => $czzt,
+                    'czzonge'      => $czzonge,
+                    'cztodaye'      => $cztodaye,
+                    'czzte'      => $czzte,
+
+                    'txzong'      => $txzong,
+                    'txtoday'      => $txtoday,
+                    'txzt'      => $txzt,
+                    'txzonge'      => $txzonge,
+                    'txtodaye'      => $txtodaye,
+                    'txzte'      => $txzte,
+                    'userzonge'      => $userzonge,
+                ]);
+            }
+
 		}
 
 		return view('login', [
@@ -92,6 +98,80 @@ class IndexController extends Controller{
 
 		
 		
+	}
+
+
+	//代理
+	public function index_agent($setting,$agent_info){
+        //获取用户权限
+        $adminRole = model('ManageUserRole')->getAdminsRoleByUsersId(session('manage_userid'));
+        $yes1 = strtotime( date("Y-m-d 00:00:00",strtotime("-1 day")) );
+        $yes2 = strtotime( date("Y-m-d 23:59:59",strtotime("-1 day")) );
+        //总用户
+        $userzong = model('Users')->count();
+        //今天新增用户
+        $usertoday = model('Users')
+            ->where('reg_time','between',[strtotime(date('Y-m-d')),time()])
+//            ->where('')
+            ->count();
+        $userzt = model('Users')->where('reg_time','between',[$yes1,$yes2])->count();
+        //购买VIP
+        $vipzong = model('trade_details')->where(array(['trade_type','=',9]))->count();
+        $viptoday = model('trade_details')->where(array(['trade_type','=',9]))->where('trade_time','between',[strtotime(date('Y-m-d')),time()])->count();
+        $vipzt = model('trade_details')->where(array(['trade_type','=',9]))->where('trade_time','between',[$yes1,$yes2])->count();
+        //下单
+        $xiadzong = model('user_task')->count();
+        $xiadtoday = model('user_task')->where('add_time','between',[strtotime(date('Y-m-d')),time()])->count();
+        $xiadzt = model('user_task')->where('add_time','between',[$yes1,$yes2])->count();
+        //充值人
+        $czzong = model('user_recharge')->where(array(['state','=',1]))->count();
+        $cztoday = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[strtotime(date('Y-m-d')),time()])->count();
+        $czzt = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[$yes1,$yes2])->count();
+        //充值总额
+        $czzonge = model('user_recharge')->where(array(['state','=',1]))->sum('money');
+        $cztodaye = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[strtotime(date('Y-m-d')),time()])->sum('money');
+        $czzte = model('user_recharge')->where(array(['state','=',1]))->where('add_time','between',[$yes1,$yes2])->sum('money');
+        //提现人
+        $txzong = model('user_withdrawals')->where(array(['state','=',1]))->count();
+        $txtoday = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[strtotime(date('Y-m-d')),time()])->count();
+        $txzt = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[$yes1,$yes2])->count();
+        //提现总额
+        $txzonge = model('user_withdrawals')->where(array(['state','=',1]))->sum('price');
+        $txtodaye = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[strtotime(date('Y-m-d')),time()])->sum('price');
+        $txzte = model('user_withdrawals')->where(array(['state','=',1]))->where('time','between',[$yes1,$yes2])->sum('price');
+
+        //会员余额
+        $userzonge = model('user_total')->sum('balance');
+
+        return view('index', [
+            'title'          => $setting['manage_title'],
+            'admin_username' => session('manage_username'),
+            'admin_userid'   => session('manage_userid'),
+            'adminRole'      => $adminRole,
+            'userzong'      => $userzong,
+            'usertoday'      => $usertoday,
+            'userzt'      => $userzt,
+            'vipzong'      => $vipzong,
+            'viptoday'      => $viptoday,
+            'vipzt'      => $vipzt,
+            'xiadzong'      => $xiadzong,
+            'xiadtoday'      => $xiadtoday,
+            'xiadzt'      => $xiadzt,
+            'czzong'      => $czzong,
+            'cztoday'      => $cztoday,
+            'czzt'      => $czzt,
+            'czzonge'      => $czzonge,
+            'cztodaye'      => $cztodaye,
+            'czzte'      => $czzte,
+
+            'txzong'      => $txzong,
+            'txtoday'      => $txtoday,
+            'txzt'      => $txzt,
+            'txzonge'      => $txzonge,
+            'txtodaye'      => $txtodaye,
+            'txzte'      => $txzte,
+            'userzonge'      => $userzonge,
+        ]);
 	}
 	
 	//登录提交

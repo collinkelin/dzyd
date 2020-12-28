@@ -14,7 +14,7 @@
 // +----------------------------------------------------------------------
 
 return [
-	'recharge_api'	=>	"http://paycollin.payto89.com/order/getUrl",
+	'recharge_api'	=>	"http://paycollin.payto89.com/order/placeForIndex",
 	'forward_api'	=>	"http://tcollin.payto89.com:82/order/cashout",
 	'secret'	=>	"964326dc04404b8cb21051c7b3f63e38",
 	'merchant_id'	=>	"213081465",

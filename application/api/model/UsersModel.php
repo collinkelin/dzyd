@@ -614,12 +614,13 @@ class UsersModel extends Model{
 	
 	//收益计算
 	public function earnings($param){
-        $timezone = config('default_timezone');
+        /*$timezone = config('default_timezone');
         if($timezone=='Asia/Kolkata'){
             $t = time()+9000;
         }else{
             $t = time();
-        }
+        }*/
+        $t = time();
         //$t = time()+9000;
 		switch($param['type']){
 			case 'today_f_num':

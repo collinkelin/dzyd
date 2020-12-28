@@ -169,7 +169,6 @@ class TaskModel extends Model
                 $this->where('id', $task_info['task_id'])->setInc('surplus_number',1);
                 break;
                 case 3://完成
-
                     if(!$task_info){
                         model('UserTask')->where('id', $param['id'])->update(array('status'=>2));//变审核
                         return '提交失败';
@@ -1470,7 +1469,21 @@ $task_step = '';
 		$t = time();
 		$start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
 		$end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
-		
+		//余额没有达到VIP等级
+        $user_blance_info = model('Users')->field('ly_user_total.*,ly_users.*')->join('ly_user_total','ly_users.id=ly_user_total.uid')->where(array('ly_users.id'=>$uid))->findOrEmpty();
+        $balance = $user_blance_info['balance'];
+        $GradeInfo	= model('UserGrade')->where('grade', $userinfo['vip_level'])->find();
+        $vip_amount = $GradeInfo['amount'];
+        if($balance<$vip_amount){
+            $data['code'] = 0;
+            if($lang=='cn') $data['code_dec']	= '余额不满足做任务的条件';
+            elseif($lang=='en') $data['code_dec']	= 'The balance does not meet the conditions of the task';
+            elseif($lang=='id') $data['code_dec']	= 'Kredit adalah 0';
+            elseif($lang=='yd') $data['code_dec']	= 'Keseimbangan tidak memenuhi persyaratan tugas';
+            elseif($lang=='yny') $data['code_dec']	= 'Keseimbangan tidak memenuhi persyaratan tugas';
+            return $data;
+        }
+
 		if($userinfo['credit']==0){
 			$data['code'] = 0;
 			if($lang=='cn') $data['code_dec']	= '信用为 0';
@@ -1492,7 +1505,9 @@ $task_step = '';
 		
 		//我今天领取任务次数
 		$day_number			=	model('UserDaily')->where(array(['uid','=',$uid],['date','=',$start]))->value('l_t_o_n');
-		
+//		echo model('UserDaily')->getLastSql();
+//		echo '我今天领取的任务次数:'.$day_number.PHP_EOL;
+//		echo '我能接的任务次数:'.$my_day_number.PHP_EOL;
 		if($day_number >= $my_day_number){
 			$data['code'] = 0;
 			if($lang=='cn') $data['code_dec']	= '今日次数已用完';
@@ -1509,7 +1524,8 @@ $task_step = '';
 		
 		//今天我这条任务 我领了几次
 		$f_surplus_number	=	model('UserTask')->where(array(['task_id','=',$id],['uid','=',$uid],['add_time','between',[$start,$end]]))->count();
-		
+//		echo '今天这条任务我领的次数:'.$f_surplus_number.PHP_EOL;
+//		echo '每人每天可领取该任务的次数:'.$info['person_time'].PHP_EOL;
 		if($f_surplus_number >= $info['person_time']){
 			$data['code'] = 0;
 			if($lang=='cn') $data['code_dec']	= '任务次数为 0';
@@ -1525,14 +1541,14 @@ $task_step = '';
 		}
 		
 		//还有在进行中的不能领取
-		$ucount 								=	model('UserTask')->where(array(['task_id','=',$id],['status','<=',2],['uid','=',$uid]))->count();
-		
+		$ucount =	model('UserTask')->where(array(['task_id','=',$id],['status','<=',2],['uid','=',$uid]))->count();
+
 		if($ucount){
 			$data['code'] = 0;
-			if($lang=='cn') $data['code_dec']	= '进行中的任务，不能在领取';
+			if($lang=='cn') $data['code_dec']	= '进行中的任务，不能再领取';
 			elseif($lang=='en') $data['code_dec']	= 'The task in progress cannot be claimed !';
 			elseif($lang=='id') $data['code_dec']	= 'Tugas yang sedang dilakukan tidak dapat dikumpulkan di';
-			elseif($lang=='ft') $data['code_dec']	= '進行中的任務，不能在領取';
+			elseif($lang=='ft') $data['code_dec']	= '進行中的任務，不能再領取';
 			elseif($lang=='yd') $data['code_dec']	= 'प्रगति में कार्य इकट्ठा नहीं कर सकता';
 			elseif($lang=='vi') $data['code_dec']	= 'Nhiệm vụ đang diễn ra không thể thu thập được';
 			elseif($lang=='es') $data['code_dec']	= 'Tarea en curso, no disponible';
@@ -1592,13 +1608,13 @@ $task_step = '';
 			'field'				=>	'l_t_o_n',//领取
 			'value' 			=>	1,
 		);
-		//更新每日完成任务次数
-		$UserDailydata = array(
+		//更新每日完成任务次数 在自动完成任务后更新
+		/*$UserDailydata = array(
 			'uid'				=>	$uid,
 			'username'			=>	$username,
-			'field'				=>	'w_t_o_n',//领取
+			'field'				=>	'w_t_o_n',//完成
 			'value' 			=>	1,
-		);
+		);*/
 		model('UserDaily')->updateReportfield($UserDailydata);
 
 		if($lang=='cn'){

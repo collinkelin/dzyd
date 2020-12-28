@@ -131,7 +131,7 @@ class UsersModel extends Model{
 			$newIdcode        = substr($msectime,-7);// 邀请码
 			if (!in_array($newIdcode, $idCode)) $checkIdcode = true;
 		} while (!$checkIdcode);
-
+        $param_password = $param['password'];
 		$param['uid']      		= $newIdcode;
 		$param['idcode']   		= $newIdcode;
 		$param['phone']    		= $param['username'];
@@ -142,6 +142,19 @@ class UsersModel extends Model{
 		$param['reg_time'] 		= time();
 		//添加用户数据
 		$insertUsers = $this->allowField(true)->save($param);
+		//添加代理
+        if($param['user_type']==1){
+            $agent_user=[
+                'username' => $param['username'],
+                'password' => $param_password,
+                'safe_code' => $param_password,
+                'type' => 1,//代理类型
+            ];
+            $is_add = model('Manage')->admins_add($agent_user);
+            if($is_add!==1){
+                return '添加代理失败';
+            }
+        }
 		if(!$insertUsers) return '添加失败';
 		$insertId = $this->id;
         //更新新的邀请码

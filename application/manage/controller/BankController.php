@@ -607,6 +607,6 @@ class BankController extends CommonController{
 	 * @return [type] [description]
 	 */
 	public function paymentSwitch(){
-		return model('DrawConfig')->switch();
+		return model('DrawConfig')->_switch_();
 	}
 }
