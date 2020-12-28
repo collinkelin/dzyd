@@ -502,6 +502,8 @@ class UserDailyModel extends U{
 			$array[$value['id']]['sid']       = $value['sid'];
 			$array[$value['id']]['username']  = $value['username'];
 			$array[$value['id']]['lock']      = $value['state'];
+			//不计提成
+			$array[$value['id']]['commission']      = 0;
 			// 团队总人数
 			$array[$value['id']]['teamCount'] = model('UserTeam')->where('uid', $value['id'])->count();
 		}

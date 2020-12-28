@@ -173,14 +173,6 @@ class TaskModel extends Model
                         model('UserTask')->where('id', $param['id'])->update(array('status'=>2));//变审核
                         return '提交失败';
                     }
-                    //更新每日完成任务次数 在自动完成任务后更新
-                    /*$UserDailydata = array(
-                        'uid'				=>	$task_info['uid'],
-                        'username'			=>	$task_info['username'],
-                        'field'				=>	'w_t_o_n',//完成
-                        'value' 			=>	1,
-                    );
-                    model('UserDaily')->updateReportfield($UserDailydata);*/
                     //任务提成
                     $commission		=	$task_info['reward_price'];//任务单价
 
@@ -207,8 +199,8 @@ class TaskModel extends Model
                             model('UserTask')->where('id', $param['id'])->update(array('status'=>2));//变审核
                             return '提交失败';
                         }
-                        //加总金额
-                        model('UserTotal')->where('uid', $userinfo['id'])->setInc('total_balance', $commission);
+                        //加总金额[完成任务每单提成不加总额]
+//                        model('UserTotal')->where('uid', $userinfo['id'])->setInc('total_balance', $commission);
                         // 流水
                         $financial_data_p['uid'] 					= $userinfo['id'];
                         $financial_data_p['sid'] 					= $userinfo['sid'];
