@@ -59,4 +59,16 @@ class CommonController extends Controller{
 	$isHttps = ((isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) == 'https')) ? 'https' : 'http';
 	return $isHttps.'://'.$_SERVER['HTTP_HOST'];
 	 */
+
+    //获取代理所有团队用户ID
+    public function getAllAgentUids(){
+        $agent_info = model('Manage')->where('id',session('manage_userid'))->find();
+        if($agent_info['type']==1){
+            //获取所有自己及下级成员
+            $agent_uid = model('Users')->where('username',$agent_info['username'])->value('id');//普通用户表对应的用户ID
+            $allSub = model('UserTeam')->where('team',$agent_uid)->column('uid');
+            return $allSub;
+        }
+        return [];
+    }
 }

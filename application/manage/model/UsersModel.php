@@ -679,6 +679,10 @@ class UsersModel extends Model{
 		$param = input('get.');
 		//查询条件组装
 		$where = array();
+        $agentUids = controller('manage/Common')->getAllAgentUids();
+        if(!empty($agentUids)){
+            $where[] = ['ly_users.id','in',$agentUids];
+        }
 		//分页参数组装
 		$pageUrl = '';
 		$param['isUser'] = (isset($param['isUser'])) ? $param['isUser'] : 1;

@@ -79,6 +79,17 @@ class UserDailyModel extends U{
 		/**
 		 * 今日数据
 		 */
+		$map_id = [];
+		$map_uid = [];
+		$map_user_daily_uid = [];
+        $agentUsers = controller('manage/Common')->getAllAgentUids();
+        if(!empty($agentUsers)){
+            $map_id[] = ['ly_users.id','in',$agentUsers];
+            $map_user_daily_uid[] = ['ly_user_daily.uid','in',$agentUsers];
+            $map_uid[] = ['uid','in',$agentUsers];
+        }
+
+
 		$todayUserTaskList = model('UserDaily')->alias('ud')
 							->field([
 								'reg_time',
@@ -87,6 +98,7 @@ class UserDailyModel extends U{
 								's_t_o_n',
 							])
 							->join('users','ud.uid=users.id')
+                            ->where($map_user_daily_uid)
 							->whereTime('ud.date', 'between', [$todayStart, $todayStart+86399])
 							->select()->toArray();
 
@@ -132,7 +144,7 @@ class UserDailyModel extends U{
 				'SUM(`pump`)'       => 'pump',
 				'SUM(`revoke`)'     => 'revoke',
 				'SUM(`commission`)' => 'commission',
-			])->where($value)->find()->toArray();
+			])->where($value)->where($map_uid)->find()->toArray();
 			// 小数位数
 			foreach ($dataTimeArray as $key2 => &$value2) {
 				foreach ($value2 as $k => &$v) if(is_numeric($v)) $v = round($v, $decimalPlace);
@@ -155,21 +167,22 @@ class UserDailyModel extends U{
 		// }
 
 		//今日注册
-		$total['todayReg']     = model('Users')->where(array(['reg_time','>=',$todayStart],['reg_time','<',$todayStart+86400],['user_type','neq','3']))->count();
+		$total['todayReg']     = model('Users')->where($map_id)->where(array(['reg_time','>=',$todayStart],['reg_time','<',$todayStart+86400],['user_type','neq','3']))->count();
 		//昨日注册
-		$total['yesterdayReg'] = model('Users')->where(array(['reg_time','>=',$todayStart-86400],['reg_time','<',$todayStart],['user_type','neq','3']))->count();
+		$total['yesterdayReg'] = model('Users')->where($map_id)->where(array(['reg_time','>=',$todayStart-86400],['reg_time','<',$todayStart],['user_type','neq','3']))->count();
 		//本月注册
-		$total['monthReg']     = model('Users')->where(array(['reg_time','>=',mktime(0,0,0,date('m'),1,date('Y'))],['reg_time','<=',mktime(23,59,59,date('m'),date('t'),date('Y'))],['user_type','neq','3']))->count();
+		$total['monthReg']     = model('Users')->where($map_id)->where(array(['reg_time','>=',mktime(0,0,0,date('m'),1,date('Y'))],['reg_time','<=',mktime(23,59,59,date('m'),date('t'),date('Y'))],['user_type','neq','3']))->count();
 		//总人数
-		$total['countUser']    = model('Users')->where('user_type','neq','3')->count();
+		$total['countUser']    = model('Users')->where($map_id)->where('user_type','neq','3')->count();
+//		echo model('Users')->getLastSql();exit;
 		//余额
-		$userBalance            = model('UserTotal')->field(['SUM(`balance`)'=>'balance','SUM(`total_balance`)'=>'total_balance'])->find();
+		$userBalance            = model('UserTotal')->where($map_uid)->field(['SUM(`balance`)'=>'balance','SUM(`total_balance`)'=>'total_balance'])->find();
 		$total['balance']       = $userBalance['balance'];
 		$total['total_balance'] = $userBalance['total_balance'];
 
 		// 当前在线人数
 		$total['online'] = 0;
-		$userList = model('Users')->column('id');
+		$userList = model('Users')->where($map_id)->column('id');
 		foreach ($userList as $key => $value) {
 			if (cache('C_token_'.$value)) $total['online']++;
 		}
@@ -178,11 +191,11 @@ class UserDailyModel extends U{
 		$gradeData['grade'] = model('UserGrade')->field('name,grade')->select()->toArray();
 		foreach ($gradeData['grade'] as $key => &$value) {
 			// 今日新增
-			$value['gradeData']['todayAdd'] = model('UserVip')->where('grade', $value['grade'])->whereTime('stime', 'between', [$todayStart, $todayStart+86399])->count();
+			$value['gradeData']['todayAdd'] = model('UserVip')->where($map_uid)->where('grade', $value['grade'])->whereTime('stime', 'between', [$todayStart, $todayStart+86399])->count();
 			// 总数
-			$value['gradeData']['total'] = model('UserVip')->where('grade', $value['grade'])->whereTime('etime', '>=', time())->count();
+			$value['gradeData']['total'] = model('UserVip')->where($map_uid)->where('grade', $value['grade'])->whereTime('etime', '>=', time())->count();
 		}
-		$gradeData['total'] = model('UserVip')->whereTime('etime', '>=', time())->count();
+		$gradeData['total'] = model('UserVip')->where($map_uid)->whereTime('etime', '>=', time())->count();
 
 		// 当前抢单人数
 		/**
@@ -218,6 +231,11 @@ class UserDailyModel extends U{
 		// $pageParam = array();
 		// 查询条件定义
 		$where = array();
+        $agentUsers = controller('manage/Common')->getAllAgentUids();
+        if(!empty($agentUsers)){
+            $where[] = ['ly_user_daily.uid','in',$agentUsers];
+        }
+//        var_dump($where);exit;
 		// 用户名
 		if(isset($param['username']) && $param['username']){
 			$where[] = array('username','=',trim($param['username']));
@@ -257,7 +275,7 @@ class UserDailyModel extends U{
 					'SUM(`pump`)'       => 'pump',
 					'SUM(`revoke`)'     => 'revoke',
 					'SUM(`commission`)' => 'commission',
-				])->where('date', $endDate)->find()->toArray();
+				])->where($where)->where('date', $endDate)->find()->toArray();
 
 				$data[$i]['date'] = $endDate;
 				$endDate -= 86400;

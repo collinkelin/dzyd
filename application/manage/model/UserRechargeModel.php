@@ -204,35 +204,47 @@ class UserRechargeModel extends Model{
                 model('Users')->where('id', $uid)->update(array('vip_level'=>$updateData['grade']));
             }
             if ($balance['balance']>=200){
-                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+1,'name'=>50]);
+                $updateGrade = $updateData['grade']+1;
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateGrade,'name'=>50]);
+                model('Users')->where('id', $uid)->update(array('vip_level'=>$updateGrade));
             }elseif ( //v2
                 $balance['balance']>=2000
                 && $allSubMembers[$item_uid]['one']>=3
             ){
-                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+2,'name'=>55]);
+                $updateGrade = $updateData['grade']+2;
+                model('Users')->where('id', $uid)->update(array('vip_level'=>$updateGrade));
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateGrade,'name'=>55]);
             }elseif (  //v3
                 $balance['balance']>=5000
                 && $allSubMembers[$item_uid]['one']>=10
                 && $allSubMembers[$item_uid]['two']>=5){
-                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+3,'name'=>60]);
+                $updateGrade = $updateData['grade']+3;
+                model('Users')->where('id', $uid)->update(array('vip_level'=>$updateGrade));
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateGrade,'name'=>60]);
             }elseif ( //v4
                 $balance['balance']>=10000
                 && $allSubMembers[$item_uid]['one']>=30
                 && $allSubMembers[$item_uid]['two']>=20
                 && $allSubMembers[$item_uid]['three']>=10){
-                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+4,'name'=>65]);
+                $updateGrade = $updateData['grade']+4;
+                model('Users')->where('id', $uid)->update(array('vip_level'=>$updateGrade));
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateGrade,'name'=>65]);
             }elseif ( //v5
                 $balance['balance']>=20000 && $balance['balance']<50000
                 && $allSubMembers[$item_uid]['one']>=50
                 && $allSubMembers[$item_uid]['two']>=30
                 && $allSubMembers[$item_uid]['three']>=15){
-                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+5,'name'=>70]);
+                $updateGrade = $updateData['grade']+5;
+                model('Users')->where('id', $uid)->update(array('vip_level'=>$updateGrade));
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateGrade,'name'=>70]);
             }elseif ( //v6
                 $balance['balance']>=50000
                 && $allSubMembers[$item_uid]['one']>=100
                 && $allSubMembers[$item_uid]['two']>=50
                 && $allSubMembers[$item_uid]['three']>=30){
-                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateData['grade']+6,'name'=>75]);
+                $updateGrade = $updateData['grade']+6;
+                model('Users')->where('id', $uid)->update(array('vip_level'=>$updateGrade));
+                model('UserVip')->where('uid',$item_uid)->update(['grade'=>$updateGrade,'name'=>75]);
             }
         }
     }
