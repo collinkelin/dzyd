@@ -173,6 +173,14 @@ class TaskModel extends Model
                         model('UserTask')->where('id', $param['id'])->update(array('status'=>2));//变审核
                         return '提交失败';
                     }
+                    //更新每日完成任务次数 在自动完成任务后更新
+                    /*$UserDailydata = array(
+                        'uid'				=>	$task_info['uid'],
+                        'username'			=>	$task_info['username'],
+                        'field'				=>	'w_t_o_n',//完成
+                        'value' 			=>	1,
+                    );
+                    model('UserDaily')->updateReportfield($UserDailydata);*/
                     //任务提成
                     $commission		=	$task_info['reward_price'];//任务单价
 
@@ -1609,13 +1617,14 @@ $task_step = '';
 			'value' 			=>	1,
 		);
 		//更新每日完成任务次数 在自动完成任务后更新
-		/*$UserDailydata = array(
+		$UserDailydata_finish = array(
 			'uid'				=>	$uid,
 			'username'			=>	$username,
 			'field'				=>	'w_t_o_n',//完成
 			'value' 			=>	1,
-		);*/
+		);
 		model('UserDaily')->updateReportfield($UserDailydata);
+		model('UserDaily')->updateReportfield($UserDailydata_finish);
 
 		if($lang=='cn'){
 			return ['code' => 1, 'code_dec' => '成功'];

@@ -167,7 +167,7 @@ class UserRechargeModel extends Model
 
 		$data['code']        = 1;
 		if(isset($result['url'])){
-            $data['url']         = $result['url']; //直接跳转第三方支付页面
+            $data['url']         = $result['url']; //直接跳转第三方支付页面地址
         }
 		$data['code_dec']    = 'The recharge application is submitted successfully';
         if($lang=='cn'){
