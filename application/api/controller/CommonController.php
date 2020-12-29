@@ -15,9 +15,11 @@ class CommonController extends BaseController{
 	    //echo date('Y-m-d H:i:s');
 		$param 	=	input('param.');
 		$lang	=	isset($param['lang']) && $param['lang'] ? $param['lang'] : 'id';
-		if(!in_array($param['lang'],['en','yd','yny','th','cn'])){
+        //只要英文
+		/*if(!in_array($param['lang'],['en','yd','yny','th','cn'])){
 		    $lang = 'en';
-        }
+        }*/
+        $lang = 'en';
 		//网站公告
 		$noticelist		= model('Notice')->where(array(['state','=',1],['lang','=',$lang]))->order('add_time','desc')->select()->toArray();
 		$data			=	[];

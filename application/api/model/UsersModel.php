@@ -443,12 +443,13 @@ class UsersModel extends Model{
 		if($lang=='cn')	$codeDec = '登录成功';
 		elseif($lang=='en') $codeDec = 'Login successful!';
 			elseif($lang=='id') $codeDec	= 'Login berhasil';
-			elseif($lang=='ft') $codeDec	= '登入成功';
+//			elseif($lang=='ft') $codeDec	= '登入成功';
 			elseif($lang=='yd') $codeDec	= 'लागइन सफल';
 			elseif($lang=='vi') $codeDec	= 'Thành công Đăng nhập';
 			elseif($lang=='es') $codeDec	= 'Acceso concedido.';
 			elseif($lang=='ja') $codeDec	= 'ログイン成功';
 			elseif($lang=='th') $codeDec	= 'เข้าสู่ระบบสำเร็จ';
+			else $codeDec	= 'Login successful!';
 		$data['code']              			= 1;
 		$data['code_dec']           		= $codeDec;
 		$data['info']['token']      		= cache('C_token_'.$userinfo['id']);

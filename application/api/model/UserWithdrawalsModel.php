@@ -692,7 +692,7 @@ class UserWithdrawalsModel extends Model
 			$data['info'][$key]['money'] 		= $value['price'];
 			$data['info'][$key]['rmoney'] 		= $rmoney;//($value['state'] == 1) ? $value['price'] : 0;
 			
-			if($lang=='cn'){
+			/*if($lang=='cn'){
 			$data['info'][$key]['status_desc'] 	= config('custom.withdrawalsState')[$value['state']];
 			}elseif($lang=='en'){
 			$data['info'][$key]['status_desc'] 	= config('custom.withdrawalsStateen')[$value['state']];
@@ -710,8 +710,8 @@ class UserWithdrawalsModel extends Model
 			$data['info'][$key]['status_desc'] 	= config('custom.withdrawalsStateja')[$value['state']];
 			}elseif($lang=='th'){
 			$data['info'][$key]['status_desc'] 	= config('custom.withdrawalsStateth')[$value['state']];
-			}			
-			
+			}*/
+            $data['info'][$key]['status_desc'] 	= config('custom.withdrawalsStateen')[$value['state']];//只要中文
 
 			$data['info'][$key]['remark'] 		= $value['remarks'];
 			$data['info'][$key]['typedes'] 		= '提现';

@@ -832,8 +832,8 @@ $task_step = '';
 
 		$param		= input('post.');
 		
-		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-
+//		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang = 'en'; //只要英文
 		// 分页
 		$is_u			= (input('post.is_u')) ? input('post.is_u') : 0;	// 是否自己发布的
 
@@ -1085,6 +1085,7 @@ $task_step = '';
 		
 		$id			= (input('post.id')) ? input('post.id') : 0;	// 任务ID;
 		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+		$lang		= 'en';	// 语言类型
 		if(!$id){
 			$data['code'] = 0;
 			if($lang=='cn') $data['code_dec']	= '没有数据';
@@ -1199,12 +1200,10 @@ $task_step = '';
 			'task_type' 		=>	$info['task_type'],
 			'task_level' 		=>	$info['task_level'],
 			'task_class' 		=>	$info['task_class'],
-			'reward_price' 		=>	$info['reward_price'],
 			'total_price' 		=>	$info['total_price'],
 			'total_number' 		=>	$info['total_number'],
 			'receive_number' 	=>	$info['receive_number'],
 			'end_time' 			=>	($info['end_time']) ? date('Y-m-d', $info['end_time']) : '',
-			'receive_number' 	=>	$info['receive_number'],
 			'lang' 				=>	$info['lang'],
 			'person_time' 		=>	$info['person_time'],
 			'is_l'				=>	$is_l,

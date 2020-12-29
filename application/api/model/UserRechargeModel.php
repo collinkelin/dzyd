@@ -510,7 +510,7 @@ class UserRechargeModel extends Model
 			$data['info'][$key]['status'] 		= $value['state'];
 			$data['info'][$key]['remarks'] 		= $value['remarks'];
 
-			if($lang=='cn'){
+			/*if($lang=='cn'){
 			$data['info'][$key]['status_desc'] 	= config('custom.rechargeStatus')[$value['state']];
 			}elseif($lang=='en'){
 			$data['info'][$key]['status_desc'] 	= config('custom.rechargeStatusen')[$value['state']];
@@ -528,8 +528,8 @@ class UserRechargeModel extends Model
 			$data['info'][$key]['status_desc'] 	= config('custom.rechargeStatusja')[$value['state']];
 			}elseif($lang=='th'){
 			$data['info'][$key]['status_desc'] 	= config('custom.rechargeStatusth')[$value['state']];
-			}
-			
+			}*/
+            $data['info'][$key]['status_desc'] 	= config('custom.rechargeStatusen')[$value['state']]; //只要英文
 			$data['info'][$key]['typedes'] 		= '充222值';
 		}
 		
