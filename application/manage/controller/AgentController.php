@@ -16,12 +16,20 @@ class AgentController extends CommonController{
 
         if($is_admin_login){
 //            $manage_info = model('Manage')->where('id',session('manage_userid'))->find();
+            $teamUids = [];
             //获取所有自己及下级成员
             //获取参数
             $param = input('get.');
-            $username = $param['name'];
-            $agent_uid = model('Users')->where('username',$username)->value('id');//普通用户表对应的用户ID
-            $teamUids = model('UserTeam')->where('team',$agent_uid)->column('uid');
+            //传递代理区域ID
+            if(isset($param['aid']) && $param['aid']>0){
+                $teamUids = $this->getAreaAgentUids($param['aid']);
+            }
+            //传递代理用户名
+            if(isset($param['name']) && !empty($param['name'])){
+                $username = $param['name'];
+                $agent_uid = model('Users')->where('username',$username)->value('id');//普通用户表对应的用户ID
+                $teamUids = model('UserTeam')->where('team',$agent_uid)->column('uid');
+            }
 //            var_dump($teamUids);exit;
                 //获取用户权限
                 $adminRole = model('ManageUserRole')->getAdminsRoleByUsersId(session('manage_userid'));
@@ -109,8 +117,37 @@ class AgentController extends CommonController{
 	public function _empty(){
 		return $this->UserList();
 	}
+
+
+	public function statistic()
+    {
+        if (request()->isAjax()) {
+            //查询符合条件的数据
+            $data[1] = ['name'=>'大区一','id'=>1];
+            $data[2] = ['name'=>'大区二','id'=>2];
+            $data[3] = ['name'=>'大区三','id'=>3];
+            $data[4] = ['name'=>'大区四','id'=>4];
+            $data[5] = ['name'=>'大区五','id'=>5];
+
+            return json([
+                'code'  => 0,
+                'msg'   => '',
+                'count' => 5,
+                'data'  => $data
+            ]);
+        }
+        return view();
+    }
+
+    public function team_member(){
+	    if(request()->isAjax()){
+
+        }
+
+	    return view();
+    }
 	/**
-	 * 用户列表
+	 * 代理列表
 	 */
 	public function lists(){
 		if (request()->isAjax()) {
@@ -119,6 +156,11 @@ class AgentController extends CommonController{
 			//查询条件组装
             $where = [];
 			$where[] = ['ly_users.user_type','=',1];
+			//区域
+			if(isset($param['area_type']) && $param['area_type']){
+				$uids = $this->getAreaAgentUids($param['area_type']);
+				$where[] = ['ly_users.id','in',$uids];
+			}
 			//用户名
 			if(isset($param['username']) && $param['username']){
 				$where[] = ['ly_users.username','like','%'.$param['username'].'%'];
@@ -127,39 +169,6 @@ class AgentController extends CommonController{
 			if(isset($param['uid']) && $param['uid']){
 				$where[] = ['ly_users.uid','=',$param['uid']];
 			}
-			
-			if (isset($param['user_type']) && $param['user_type']) {
-			    $where[] = ['ly_users.user_type', '=', $param['user_type']];
-			}
-
-			//邀请码 推荐人
-			if(isset($param['idcode']) && $param['idcode']){
-				$where[] = ['ly_users.recommend','=',$param['idcode']];
-			}
-
-			//用户名
-			if(isset($param['balance1']) && $param['balance1']){
-				$where[] = ['user_total.balance','>=',$param['balance1']];
-			}
-			//用户名
-			if(isset($param['balance2']) && $param['balance2']){
-				$where[] = ['user_total.balance','<=',$param['balance2']];
-			}
-			//用户名
-			if(isset($param['state']) && $param['state']){
-				$where[] = ['ly_users.state','=',$param['state']];
-			}
-			//用户名
-			if(isset($param['is_automatic']) && $param['is_automatic']){
-				$where[] = ['ly_users.is_automatic','=',$param['is_automatic']];
-			}
-			// 时间
-			if(isset($param['datetime_range']) && $param['datetime_range']){
-				$dateTime = explode(' - ', $param['datetime_range']);
-				$where[]  = ['reg_time','>=',strtotime($dateTime[0])];
-				$where[]  = ['reg_time','<=',strtotime($dateTime[1])];
-			}
-
 
             $count              = model('Users')->join('user_total','ly_users.id = user_total.uid')->where($where)->count(); // 总记录数
 			$param['limit']     = (isset($param['limit']) and $param['limit']) ? $param['limit'] : 15; // 每页记录数
@@ -184,8 +193,45 @@ class AgentController extends CommonController{
 				'data'  => $data
 			]);
 		}
-
+        $arealist = $this->getAreaList();
+        $this->assign('arealist',$arealist);
 		return view();
 	}
+
+    /**
+     * 添加账号
+     */
+    public function add(){
+        if(request()->isAjax()){
+            return model('Users')->add();
+        }
+        $arealist = $this->getAreaList();
+        $this->assign('arealist',$arealist);
+        return view('', [
+
+        ]);
+    }
+
+    /**
+     * 编辑
+     */
+    public function edit(){
+        if(request()->isAjax()){
+            $param = input('post.');
+            $res = model('Manage')->where('username',$param['name'])->setField('area_type',$param['area_type']);
+            if($res){
+                return 1;
+            }else{
+                return '代理编辑失败';
+            }
+        }
+        $uid = input('get.id');
+        $data = model('Users')->where('id',$uid)->find();
+        $agent_info = model('Manage')->where('username',$data['username'])->find();
+        $arealist = $this->getAreaList();
+        $this->assign('arealist',$arealist);
+        $this->assign('agent_info',$agent_info);
+        return view();
+    }
 
 }

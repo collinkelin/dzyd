@@ -149,6 +149,7 @@ class UsersModel extends Model{
                 'password' => $param_password,
                 'safe_code' => $param_password,
                 'type' => 1,//代理类型
+                'area_type' => $param['area_type'],//代理类型
             ];
             $is_add = model('Manage')->admins_add($agent_user);
             if($is_add!==1){

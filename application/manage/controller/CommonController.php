@@ -71,4 +71,30 @@ class CommonController extends Controller{
         }
         return [];
     }
+
+    //获取区域代理所有团队用户ID
+    public function getAreaAgentUids($aid=null)
+    {
+        if($aid){
+            $agentUsers = model('Manage')->where('area_type',$aid)->column('username');
+            $agentIds = [];
+            foreach ($agentUsers as $item){
+                $agentIds[] = model('Users')->where('username', $item)->value('id');
+            }
+            $teamUids = model('UserTeam')->where('team','in',$agentIds)->column('uid');
+            return $teamUids;
+        }
+        return [];
+    }
+
+    public function getAreaList()
+    {
+        return [
+            1 => '大区一',
+            2 => '大区二',
+            3 => '大区三',
+            4 => '大区四',
+            5 => '大区五',
+        ];
+    }
 }
