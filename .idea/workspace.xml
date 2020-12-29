@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a9513a1-227a-49ec-84d1-2d694ecec075" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/controller/BankController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/controller/BankController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/controller/CommonController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/controller/CommonController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/controller/IndexController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/controller/IndexController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/model/UserDailyModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/model/UserDailyModel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/model/UserRechargeModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/model/UserRechargeModel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/model/UsersModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/model/UsersModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/api/controller/SmsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/controller/SmsController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +91,7 @@
       <workItem from="1609040845428" duration="638000" />
       <workItem from="1609069525961" duration="621000" />
       <workItem from="1609071795858" duration="15506000" />
-      <workItem from="1609125826616" duration="52130000" />
+      <workItem from="1609125826616" duration="55629000" />
     </task>
     <servers />
   </component>
