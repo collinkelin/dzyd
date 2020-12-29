@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a9513a1-227a-49ec-84d1-2d694ecec075" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/application/manage/controller/AgentController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/manage/view/agent/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/application/manage/view/agent/lists.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/api/controller/SmsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/controller/SmsController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/api/controller/CommonController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/controller/CommonController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/manage/view/index/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/view/index/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,9 +50,17 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../dztg" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/application/manage/view/agent" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\dzyd\dzxts\application\manage\view\agent" />
+      <recent name="D:\dzyd\dzxts\public\resource\js\manage" />
+      <recent name="D:\dzyd\dzxts\application\manage\view" />
+      <recent name="D:\dzyd\dzxts\application\manage\controller" />
+    </key>
   </component>
   <component name="RunManager" selected="PHP Script.test.php">
     <configuration name="Unnamed" type="PhpLocalRunConfigurationType" factoryName="PHP Console" nameIsGenerated="true">
@@ -91,7 +103,7 @@
       <workItem from="1609040845428" duration="638000" />
       <workItem from="1609069525961" duration="621000" />
       <workItem from="1609071795858" duration="15506000" />
-      <workItem from="1609125826616" duration="55629000" />
+      <workItem from="1609125826616" duration="71597000" />
     </task>
     <servers />
   </component>
