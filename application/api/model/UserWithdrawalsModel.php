@@ -19,6 +19,17 @@ class UserWithdrawalsModel extends Model
 		$uid		= $userArr[0];//uid
 		$username	= $userArr[1];//username
 		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+
+        //如果未完成当天的任务不允许提现
+        $user_vip_level = model('users')->where('id',$uid)->value('vip_level');
+        //可领取任务次数
+        $task_number = model('UserGrade')->where('grade',$user_vip_level)->value('number');
+        //今日剩余任务数
+        $todayRemainNumber = $task_number- model('Users')->earnings(array('type'=>'today_j_num','uid'=>$uid));
+        if($todayRemainNumber>0){
+            return ['code' => 0, 'code_dec' => 'You still have remaining tasks that are not completed and cannot be withdrawn.'];
+        }
+
 		/*laoli--------------------------------------------------------start*/
 		//查询用户类型——测试用户类型不允许提现
 		$userType = model('users')->where('id',$uid)->value('user_type');
