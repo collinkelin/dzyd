@@ -22,7 +22,7 @@ class BaseController extends Controller{
 		//接口白名单		
 		
 		//不用用户登录可以访问的页面
-		$no_user_id_arr	= array('code','login','getdownloadurl','checkslogin','sendsmscode','register','checksmsresetpw','resetpassword','backdata','createorder','orderlist','orderrecordlist','repayment','signin','gettaskranklist','gettaskclasslist','getvipuserexpire','gettasklist','gettaskinfo','taskordertrial','callback');
+		$no_user_id_arr	= array('code','login','getdownloadurl','checkslogin','sendsmscode','register','checksmsresetpw','resetpassword','backdata','createorder','orderlist','orderrecordlist','repayment','signin','gettaskranklist','gettaskclasslist','getvipuserexpire','gettasklist','gettaskinfo','taskordertrial','callback','wcallback');
 
 		$action = request()->action();
 		
