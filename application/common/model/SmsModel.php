@@ -175,13 +175,14 @@ class SmsModel extends Model{
 	
 	public function sendSMSCode($phone=''){
 	    
-	    $lang		= (input('post.lang')) ? input('post.lang') : 'ft';	// 语言类型
-		
+//	    $lang		= (input('post.lang')) ? input('post.lang') : 'ft';	// 语言类型
+        $lang = 'en';
 		$phone = (input('post.phone')) ? input('post.phone') : $phone;// 手机号
 		//$dest  = (input('post.dest')) ? input('post.dest') : '86';// 手机号
         $dest = '91';
-		if (!$phone) return ['code'=>0,'code_dec'=>'请输入手机号'];
-		
+//		if (!$phone) return ['code'=>0,'code_dec'=>'请输入手机号'];
+		if (!$phone) return ['code'=>0,'code_dec'=>'Please enter phone number'];
+
 		$code_rand		= (input('post.code_rand')) ? input('post.code_rand') : '';// 随机码
 		$code			= (input('post.code')) ? input('post.code') : '';// 验证码
 		//$code			= 123456;// 验证码
@@ -191,7 +192,8 @@ class SmsModel extends Model{
 
 	//	if(!$cache_code || $cache_code != $code || !$code || !$recommend || $phone==$recommend){
 		if(!$cache_code || $cache_code != $code || !$code){
-			return ['code'=>0, 'code_dec'=>'短信验证码过期或未填写邀请码'];
+//			return ['code'=>0, 'code_dec'=>'短信验证码过期或未填写邀请码'];
+			return ['code'=>0, 'code_dec'=>'SMS verification code expired or invitation code not filled in'];
 		}
 
 		//删除随机码缓存
@@ -201,7 +203,8 @@ class SmsModel extends Model{
 		$ip = request()->ip();
 
 		if(!$ip){
-			return ['code'=>0, 'code_dec'=>'失败2'];
+//			return ['code'=>0, 'code_dec'=>'失败2'];
+			return ['code'=>0, 'code_dec'=>'fail2'];
 		}
 		
 		$code = rand(100000,999999);
@@ -222,7 +225,8 @@ class SmsModel extends Model{
 		$is_sms	=	model('Setting')->where('id',1)->value('is_sms');
 
 		if($is_sms==2){
-			return ['code'=>0, 'code_dec'=>'失败'];
+//			return ['code'=>0, 'code_dec'=>'失败'];
+			return ['code'=>0, 'code_dec'=>'fail'];
 		}
 		
 		//邀请码是否存在
