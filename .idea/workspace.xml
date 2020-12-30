@@ -2,21 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a9513a1-227a-49ec-84d1-2d694ecec075" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/application/manage/view/agent/add.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/application/manage/view/agent/edit.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/application/manage/view/agent/statistic.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/api/controller/OrderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/controller/OrderController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/api/model/UserWithdrawalsModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/model/UserWithdrawalsModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/api/controller/BaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/controller/BaseController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/api/model/TaskModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/model/TaskModel.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/manage/controller/AgentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/controller/AgentController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/manage/controller/CommonController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/controller/CommonController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/model/UserWithdrawalsModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/model/UserWithdrawalsModel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/model/UsersModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/model/UsersModel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/view/agent/lists.html" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/view/agent/lists.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/view/user/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/view/user/add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/view/user/user_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/view/user/user_list.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +50,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../dztg" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -113,6 +104,8 @@
       <workItem from="1609069525961" duration="621000" />
       <workItem from="1609071795858" duration="15506000" />
       <workItem from="1609125826616" duration="71597000" />
+      <workItem from="1609301458414" duration="1928000" />
+      <workItem from="1609306046583" duration="2106000" />
     </task>
     <servers />
   </component>

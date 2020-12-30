@@ -41,7 +41,8 @@ class BaseController extends Controller{
 			}
 		}*/
 		
-		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+//		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang = 'en';
 		if(!in_array($action,$no_user_id_arr)){
 
 			$user_token = isset($param['token']) && $param['token'] ? $param['token'] : '';
@@ -140,7 +141,8 @@ class BaseController extends Controller{
 	
 	public function getDownloadUrl(){
     	$setting = model('Setting')->field('android,iphone')->where('id','>',0)->findOrEmpty();
-    	if (!$setting) return json(['code'=>0,'code_dec'=>'无法获取下载地址！']);
+//    	if (!$setting) return json(['code'=>0,'code_dec'=>'无法获取下载地址！']);
+    	if (!$setting) return json(['code'=>0,'code_dec'=>'Unable to get the download address!']);
 
 		$data['android'] = $setting['android'];
 		$data['iphone']  = $setting['iphone'];

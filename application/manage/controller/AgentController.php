@@ -122,12 +122,18 @@ class AgentController extends CommonController{
 	public function statistic()
     {
         if (request()->isAjax()) {
+            $area_list = $this->getAreaList();
             //查询符合条件的数据
-            $data[1] = ['name'=>'大区一','id'=>1];
+            $data = [];
+            foreach ($area_list as $key => $item){
+                $data[$key]['id'] = $key;
+                $data[$key]['name'] = $item;
+            }
+            /*$data[1] = ['name'=>'大区一','id'=>1];
             $data[2] = ['name'=>'大区二','id'=>2];
             $data[3] = ['name'=>'大区三','id'=>3];
             $data[4] = ['name'=>'大区四','id'=>4];
-            $data[5] = ['name'=>'大区五','id'=>5];
+            $data[5] = ['name'=>'大区五','id'=>5];*/
 
             return json([
                 'code'  => 0,

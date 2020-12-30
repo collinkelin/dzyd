@@ -1373,8 +1373,8 @@ $task_step = '';
 		$uid			= $userArr[0];
 		$username		= $userArr[1];
 		$id				= (input('post.id')) ? input('post.id') : 0;	// 任务ID;
-		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-
+//		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang = 'en';
 		if(!$id){
 			$data['code'] = 0;
 			if($lang=='cn') $data['code_dec']	= '没有数据';
