@@ -17,11 +17,12 @@ class UsersModel extends Model{
 		$username		= $param['username'];		// 用户名
 		$password		= input('post.password/s');	// 密码
 		$smscode		= input('post.smscode/d');	// 短信验证码
-		$smscode		= false;	// 短信验证码
+//		$smscode		= false;	// 短信验证码
 		//$dest			= (input('post.dest')) ? input('post.dest') : 86;	// 国家区号
 		$dest			= 91;	// 国家区号
-		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-		
+//		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+		$lang			= 'en';	// 语言类型
+
  		if($smscode){
  			$cachesmscode	= cache('C_Code_'.$username);
  			if(!$smscode)   return ['code'=>0,'code_dec'=>'请输入验证码'];
@@ -291,8 +292,8 @@ class UsersModel extends Model{
 		//前端到短信验证页面
 		$username	=	$param['username'];
 		$password	=	$param['password'];
-		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-		
+//		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang			= 'en';
 		//获取用户信息
 		$userinfo = $this->where(array(['username','=',$username],['state','=',1]))->find();
 
@@ -443,12 +444,13 @@ class UsersModel extends Model{
 		if($lang=='cn')	$codeDec = '登录成功';
 		elseif($lang=='en') $codeDec = 'Login successful!';
 			elseif($lang=='id') $codeDec	= 'Login berhasil';
-			elseif($lang=='ft') $codeDec	= '登入成功';
+//			elseif($lang=='ft') $codeDec	= '登入成功';
 			elseif($lang=='yd') $codeDec	= 'लागइन सफल';
 			elseif($lang=='vi') $codeDec	= 'Thành công Đăng nhập';
 			elseif($lang=='es') $codeDec	= 'Acceso concedido.';
 			elseif($lang=='ja') $codeDec	= 'ログイン成功';
 			elseif($lang=='th') $codeDec	= 'เข้าสู่ระบบสำเร็จ';
+			else $codeDec	= 'Login successful!';
 		$data['code']              			= 1;
 		$data['code_dec']           		= $codeDec;
 		$data['info']['token']      		= cache('C_token_'.$userinfo['id']);
@@ -565,8 +567,8 @@ class UsersModel extends Model{
 		$userArr	= explode(',',auth_code($token,'DECODE'));
 		$uid		= $userArr[0];
 		
-		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-		
+//		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang			= 'en';
 		$userinfo	= $this->where('id', $uid)->find();
 		if(!$userinfo){
 			$data['code'] = 2;
@@ -704,8 +706,8 @@ class UsersModel extends Model{
 		$uid			= $userArr[0];	//uid
 		$username     	= $userArr[1];	//username
 		$code 			= $param['code']; //验证码
-		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-
+//		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang			= 'en';
 		//手机号 密码 验证码
 		$code =	$param['code'];
 		
@@ -873,8 +875,8 @@ class UsersModel extends Model{
 		$userArr		= explode(',',auth_code($token,'DECODE'));
 		$uid			= $userArr[0];
 		$username     	= $userArr[1];
-		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-		
+//		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang			= 'en';
 		$old_password		= input('post.password/s');
 		$new_password		= input('post.n_password/s');
 		$new_re_password	= input('post.r_password/s');
@@ -971,8 +973,8 @@ class UsersModel extends Model{
 		$userArr		= explode(',',auth_code($token,'DECODE'));//uid,username
 		$uid			= $userArr[0];//uid
 		$username     	= $userArr[1];//username
-		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-		
+//		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang			= 'en';
 		$userinfo = $this->field('ly_user_total.*,ly_users.*')->join('ly_user_total','ly_users.id=ly_user_total.uid')->where(array('ly_users.id'=>$uid))->findOrEmpty();
 		if (!$userinfo) return ['code'=>0];
 		//$settingdata                    = model('Setting')->where('id',1)->findOrEmpty();
@@ -1092,8 +1094,8 @@ class UsersModel extends Model{
 		$userArr		= explode(',',auth_code($token,'DECODE'));
 		$uid			= $userArr[0];
 		$username     	= $userArr[1];
-		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-		
+//		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang			= 'en';
 		$bankcount		=	model('UserBank')->where('uid',$uid)->count();//绑定银行卡数量
 		
 		if(!$bankcount){
@@ -1224,8 +1226,8 @@ class UsersModel extends Model{
 		$token			= $param['token'];
 		$userArr		= explode(',',auth_code($token,'DECODE'));
 		$uid			= $userArr[0];
-		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-		
+//		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang			= 'en';
 		unset($param['token']);
 		unset($param['lang']);
 		if(!$param){
@@ -1583,8 +1585,8 @@ class UsersModel extends Model{
 		$token		= input('post.token/s');
 		$userArr	= explode(',',auth_code($token,'DECODE'));
 		$uid		= $userArr[0];
-		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-
+//		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang			= 'en';
 		cache('C_token_'.$uid,NULL);	//删除登录缓存
 			if($lang=='cn') $data['code_dec']	= '退出成功';
 			elseif($lang=='en') $data['code_dec']	= 'Exit succeeded';
@@ -1654,8 +1656,8 @@ class UsersModel extends Model{
 		$token			=	$param['token'];
 		$userArr		=	explode(',',auth_code($token,'DECODE'));
 		$uid			=	$userArr[0];
-		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-		
+//		$lang			= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang			= 'en';
 		// 今日事件
 		$today = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
 		$todayEnd = mktime(23, 59, 59, date('m'), date('d'), date('Y'));

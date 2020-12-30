@@ -35,7 +35,9 @@ class OrderController extends BaseController{
             if(is_string($data)){
                 $data_arr = json_decode($data,true);
             }
-            
+            if($data_arr['state'] != 4){
+                echo 'failed';die;
+            }
             $callback_order = model('UserRecharge')->where('order_number',$data_arr['sh_order'])->find();
             if(!empty($callback_order)){
                 model('manage/UserRecharge')->rechargeDispose($callback_order);
@@ -45,6 +47,52 @@ class OrderController extends BaseController{
         }
         echo 'failed';die;
 	}
+	//提现回调
+	public function wcallBack(){
+	    $callback_ip = get_client_ip();
+	    $ip_whitelist = [
+	        '119.167.182.109',
+	        '124.156.19.131',
+	        '45.207.63.12',
+	        '45.207.63.13',
+	        '45.207.62.42',
+	        '119.28.250.51', //提现回调ip,以上是充值回调
+	        '156.230.4.79'
+        ];
+
+        $data = input('param.');
+        //var_dump($data);exit;
+        if(in_array($callback_ip,$ip_whitelist)){
+            $data = input('param.');
+            Log::write("孟加支付异步通知====\r\n参数：".var_export($data,true)."\r\n");
+            if (!$data) {
+                echo 'failed';die;
+            }
+            if(is_array($data)){
+                $data_arr = $data;
+            }
+            if(is_string($data)){
+                $data_arr = json_decode($data,true);
+            }
+            if($data_arr['state'] != 4){
+                model('UserWithdrawals')->where('order_number',$data_arr['sh_order'])->setField('state',3);
+                model('UserWithdrawals')->where('order_number',$data_arr['sh_order'])->setField('examine',3);
+                echo 'failed';die;
+            }else{
+                model('UserWithdrawals')->where('order_number',$data_arr['sh_order'])->setField('state',1);
+                model('UserWithdrawals')->where('order_number',$data_arr['sh_order'])->setField('remarks','尊敬的用户您好！您的编号为'.$data_arr['sh_order'].'的提现已成功');
+                
+            }
+            // $callback_order = model('UserWithdrawals')->where('order_number',$data_arr['sh_order'])->find();
+            // if(!empty($callback_order)){
+            //     model('manage/UserWithdrawals')->wrechargeDispose($callback_order);
+            // }
+            //model('UserWithdrawals')->where('order_number',$data_arr['sh_order'])->setField('state',1);
+            echo 'success';die;
+        }
+        echo 'failed';die;
+	}
+	
 	
 	//创建订单接口
 	//返回支付页面 paymentUrl

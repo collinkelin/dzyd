@@ -17,6 +17,17 @@
                     <form class="layui-form search">
                         <div class="layui-form-item">
                              <div class="layui-inline">
+                                 <label class="layui-form-label">代理区域</label>
+                                 <div class="layui-input-inline">
+                                     <select name="area_type" lay-search="">
+                                         <option value="">--请选择--</option>
+                                         {foreach $arealist as  $key => $value}
+                                         <option value="{$key}">{$value}</option>
+                                         {/foreach}
+                                     </select>
+                                 </div>
+                            </div>
+                            <div class="layui-inline">
                                     <label class="layui-form-label">账号类型</label>
                                     <div class="layui-input-inline">
                                         <select name="user_type" lay-search="">
@@ -24,16 +35,13 @@
                                             <option value="1">代理</option>
                                             <option value="2">会员</option>
                                             <option value="3">测试</option>
-                                           
                                         </select>
                                     </div>
                             </div>
-                            
-                            
                             <div class="layui-inline">
                                 <label class="layui-form-label">账号</label>
                                 <div class="layui-input-inline">
-                                    <input class="layui-input" name="username" autocomplete="off">
+                                    <input class="layui-input" name="username" autocomplete="off" value="{$agent_name}">
                                 </div>
                             </div>
                             <div class="layui-inline">
@@ -97,6 +105,7 @@
     </script>
     <script type="text/html" id="danger">
         <input type="checkbox" name="danger" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="userAction" data-suburi="risk" {{ d.danger == 1 ? 'checked' : '' }}>
+        <input type="hidden" name="agent_name" value="{$agent_name}">
     </script>
     <script type="text/html" id="action">
     	<div class="layui-btn-group">
@@ -122,6 +131,9 @@
             ,title: '用户列表'
             ,url: '/manage/user/userList'
             ,method: 'post'
+            ,where:{
+                "agent_name": "{$agent_name}"
+            }
             ,cols: [[
                 {checkbox: true, fixed: true, totalRowText: '合计'}
                 ,{field: 'username', title: '账号', sort: true, fixed: 'left'}
@@ -145,7 +157,7 @@
             ,defaultToolbar: ['filter', 'print', 'exports']
             ,totalRow: true
             ,page: {
-                layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+                layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
             }
             ,skin: 'row' //行边框风格
             ,even: true //开启隔行背景
@@ -178,9 +190,9 @@
                         ,balance2: $("input[name='balance2']").val()
                         ,state: $("select[name='state'] option:selected").val()
                         ,is_automatic: $("select[name='is_automatic'] option:selected").val()
-						,idcode:$("input[name='idcode']").val(),
-						user_type:$('select[name=user_type] option:selected').val()
-
+						,idcode:$("input[name='idcode']").val()
+						,user_type:$('select[name=user_type] option:selected').val()
+						,area_type:$('select[name=area_type] option:selected').val()
                     }
                 }, 'data');
             }

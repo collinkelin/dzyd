@@ -66,9 +66,40 @@ class CommonController extends Controller{
         if($agent_info['type']==1){
             //获取所有自己及下级成员
             $agent_uid = model('Users')->where('username',$agent_info['username'])->value('id');//普通用户表对应的用户ID
-            $allSub = model('UserTeam')->where('team',$agent_uid)->column('uid');
+            $allSub = model('UserTeam')->where('uid',$agent_uid)->column('team');
             return $allSub;
         }
         return [];
+    }
+
+    //获取区域代理所有团队用户ID
+    public function getAreaAgentUids($aid=null)
+    {
+        if($aid){
+            $agentUsers = model('Manage')->where('area_type',$aid)->column('username');
+            $agentIds = [];
+            foreach ($agentUsers as $item){
+                $agentIds[] = model('Users')->where('username', $item)->value('id');
+            }
+            $teamUids = model('UserTeam')->where('uid','in',$agentIds)->column('team');
+            return $teamUids;
+        }
+        return [];
+    }
+
+    public function getAreaList()
+    {
+        return [
+            1 => '大区一',
+            2 => '大区二',
+            3 => '大区三',
+            4 => '大区四',
+            5 => '大区五',
+            6 => '大区六',
+            7 => '大区七',
+            8 => '大区八',
+            9 => '大区九',
+            10 => '大区十',
+        ];
     }
 }

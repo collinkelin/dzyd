@@ -30,9 +30,12 @@ class IndexController extends Controller{
                 $usertoday = model('Users')->where('reg_time','between',[strtotime(date('Y-m-d')),time()])->count();
                 $userzt = model('Users')->where('reg_time','between',[$yes1,$yes2])->count();
                 //购买VIP
-                $vipzong = model('trade_details')->where(array(['trade_type','=',9]))->count();
+                /*$vipzong = model('trade_details')->where(array(['trade_type','=',9]))->count();
                 $viptoday = model('trade_details')->where(array(['trade_type','=',9]))->where('trade_time','between',[strtotime(date('Y-m-d')),time()])->count();
-                $vipzt = model('trade_details')->where(array(['trade_type','=',9]))->where('trade_time','between',[$yes1,$yes2])->count();
+                $vipzt = model('trade_details')->where(array(['trade_type','=',9]))->where('trade_time','between',[$yes1,$yes2])->count();*/
+                $vipzong = model('UserVip')->where(array(['grade','>',2]))->count();
+                $viptoday = model('UserVip')->where(array(['grade','>',2]))->where('stime','between',[strtotime(date('Y-m-d')),time()])->count();
+                $vipzt = model('UserVip')->where(array(['grade','>',2]))->where('stime','between',[$yes1,$yes2])->count();
                 //下单
                 $xiadzong = model('user_task')->count();
                 $xiadtoday = model('user_task')->where('add_time','between',[strtotime(date('Y-m-d')),time()])->count();
@@ -109,7 +112,7 @@ class IndexController extends Controller{
         $yes2 = strtotime( date("Y-m-d 23:59:59",strtotime("-1 day")) );
         //获取所有自己及下级成员
         $agent_uid = model('Users')->where('username',$agent_info['username'])->value('id');//普通用户表对应的用户ID
-        $allSub = model('UserTeam')->where('team',$agent_uid)->column('uid');
+        $allSub = model('UserTeam')->where('uid',$agent_uid)->column('team');
         //总过滤条件
 //        $where[] = ['id','in',$allSub];
         //总用户
@@ -122,9 +125,12 @@ class IndexController extends Controller{
         $userzt = model('Users')->where('reg_time','between',[$yes1,$yes2])
             ->where('id','in',$allSub)->count();
         //购买VIP
-        $vipzong = model('trade_details')->where('uid','in',$allSub)->where(array(['trade_type','=',9]))->count();
-        $viptoday = model('trade_details')->where('uid','in',$allSub)->where(array(['trade_type','=',9]))->where('trade_time','between',[strtotime(date('Y-m-d')),time()])->count();
-        $vipzt = model('trade_details')->where('uid','in',$allSub)->where(array(['trade_type','=',9]))->where('trade_time','between',[$yes1,$yes2])->count();
+        /*$vipzong = model('UserVip')->where(array(['grade','>',2]))->count();
+        $viptoday = model('UserVip')->where(array(['grade','>',2]))->where('stime','between',[strtotime(date('Y-m-d')),time()])->count();
+        $vipzt = model('UserVip')->where(array(['grade','>',2]))->where('stime','between',[$yes1,$yes2])->count();*/
+        $vipzong = model('UserVip')->where('uid','in',$allSub)->where(array(['grade','>',2]))->count();
+        $viptoday = model('UserVip')->where('uid','in',$allSub)->where(array(['grade','>',2]))->where('stime','between',[strtotime(date('Y-m-d')),time()])->count();
+        $vipzt = model('UserVip')->where('uid','in',$allSub)->where(array(['grade','>',2]))->where('stime','between',[$yes1,$yes2])->count();
         //下单
         $xiadzong = model('user_task')->where('uid','in',$allSub)->count();
         $xiadtoday = model('user_task')->where('uid','in',$allSub)->where('add_time','between',[strtotime(date('Y-m-d')),time()])->count();

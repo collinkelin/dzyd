@@ -1,6 +1,6 @@
 <?php
 namespace app\manage\model;
-
+use think\Db;
 use think\Model;
 
 class UserWithdrawalsModel extends Model{
@@ -124,7 +124,8 @@ class UserWithdrawalsModel extends Model{
 		// 更新订单
 		$res = $this->where('order_number',$orderNumber)->update($param);
 		if(!$res) return '操作失败1';
-
+        $user = Db::name('users')->where(array('id'=>$orderInfo['uid']))->find();
+        //$userbank = Db::name('bank')->where(array('id'=>$orderInfo['bank_id']))->find();
 		switch ($param['examine']) {
 			case 2:				
 				//构造备注信息
@@ -185,11 +186,102 @@ class UserWithdrawalsModel extends Model{
 			case 1:
 				//添加操作日志
 				model('Actionlog')->actionLog(session('manage_username'),'审核订单号为'.$orderNumber.'的提现订单。处理状态：审核通过',1);
+				//========================================调用第三方开始======================================
+                //孟加支付提现请求
+                $time = time();
+                //$pay_config = config('pay.');
+                $params = [
+                    'type'=>3,
+                    'mch_id'=>'213081465',
+                    'order_sn'=>$orderNumber,
+                    'money'=>sprintf("%.2f",$orderInfo['price']), //卢比
+                    'goods_desc'=>'coin',
+                    'client_ip'=>get_client_ip(),
+                    'notify_url'=>'http://m.m1mz0g.com/api/Order/wcallBack',
+                    'time'=>$time,
+                    //'bank_type_name'=>$userbank['bank_name'],
+                    'bank_name'=>$orderInfo['card_name'],
+                    'bank_card'=>$orderInfo['card_number'],
+                    'ifsc'=>$orderInfo['ifsc'],
+                    'bank_tel'=>$user['phone'],
+                    'bank_email'=>'09390247163@abc.com',
+                    // 'paytm_account'=>'collin',
+                ];
+                $sort_params = asc_sort($params);
+                //$sort_params = http_build_query($params);
+                // var_dump($sort_params.'&key='.$pay_config['secret']);exit;
+                $sign = md5($sort_params.'&key=964326dc04404b8cb21051c7b3f63e38');
+                $params['sign'] = $sign;
+                //var_dump($params);exit;
+                $response = $this->curl_post('http://tcollin.payto89.com:82/order/cashout',$params);
+                $result = json_decode($response,true);
+                if(!$result || $result['code']!=1 || $result['msg']!='success'){
+                    //return ['code' => 0, 'code_dec' => 'व्यवसाय असफल'];
+                    return ['code' => 0, 'code_dec' => $result['msg']];
+                }
+                $carry['remarks'] = $response;
+                //=====================第三方结束=====================================================================
 				break;
 		}
 
 		return 1;
 	}
+	private function curl_post( $url, $postdata ) {
+    
+        $header = array(
+            'Accept: text/html',
+        );
+    
+        //初始化
+        $curl = curl_init();
+        //设置抓取的url
+        curl_setopt($curl, CURLOPT_URL, $url);
+        //设置头文件的信息作为数据流输出
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        //设置获取的信息以文件流的形式返回，而不是直接输出。
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        // 超时设置
+        curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+    
+        // 超时设置，以毫秒为单位
+        // curl_setopt($curl, CURLOPT_TIMEOUT_MS, 500);
+    
+        // 设置请求头
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+    
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE );
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE );
+    
+        //设置post方式提交
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
+        //执行命令
+        $data = curl_exec($curl);
+        // 显示错误信息
+        if (curl_error($curl)) {
+            return "Error: " . curl_error($curl);
+        } else {
+            // 打印返回的内容
+            return $data;
+            curl_close($curl);
+        }
+    }
+    
+	public static function asc_sort($params = array())
+    {
+        if (!empty($params)) {
+            $p = ksort($params);
+            if ($p) {
+                $str = '';
+                foreach ($params as $k => $val) {
+                    $str .= $k . '=' . $val . '&';
+                }
+                $strs = rtrim($str, '&');
+                return $strs;
+            }
+        }
+        return false;
+    }
 
 	/**
 	 * 财务处理
