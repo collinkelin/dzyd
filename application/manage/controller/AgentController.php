@@ -28,7 +28,7 @@ class AgentController extends CommonController{
             if(isset($param['name']) && !empty($param['name'])){
                 $username = $param['name'];
                 $agent_uid = model('Users')->where('username',$username)->value('id');//普通用户表对应的用户ID
-                $teamUids = model('UserTeam')->where('team',$agent_uid)->column('uid');
+                $teamUids = model('UserTeam')->where('uid',$agent_uid)->column('team');
             }
 //            var_dump($teamUids);exit;
                 //获取用户权限
@@ -41,9 +41,12 @@ class AgentController extends CommonController{
                 $usertoday = model('Users')->where('id','in',$teamUids)->where('reg_time','between',[strtotime(date('Y-m-d')),time()])->count();
                 $userzt = model('Users')->where('id','in',$teamUids)->where('reg_time','between',[$yes1,$yes2])->count();
                 //购买VIP
-                $vipzong = model('trade_details')->where('uid','in',$teamUids)->where(array(['trade_type','=',9]))->count();
-                $viptoday = model('trade_details')->where('uid','in',$teamUids)->where(array(['trade_type','=',9]))->where('trade_time','between',[strtotime(date('Y-m-d')),time()])->count();
-                $vipzt = model('trade_details')->where('uid','in',$teamUids)->where(array(['trade_type','=',9]))->where('trade_time','between',[$yes1,$yes2])->count();
+            /*$vipzong = model('UserVip')->where(array(['grade','>',2]))->count();
+        $viptoday = model('UserVip')->where(array(['grade','>',2]))->where('stime','between',[strtotime(date('Y-m-d')),time()])->count();
+        $vipzt = model('UserVip')->where(array(['grade','>',2]))->where('stime','between',[$yes1,$yes2])->count();*/
+                $vipzong = model('UserVip')->where('uid','in',$teamUids)->where(array(['grade','>',2]))->count();
+                $viptoday = model('UserVip')->where('uid','in',$teamUids)->where(array(['grade','>',2]))->where('stime','between',[strtotime(date('Y-m-d')),time()])->count();
+                $vipzt = model('UserVip')->where('uid','in',$teamUids)->where(array(['grade','>',2]))->where('stime','between',[$yes1,$yes2])->count();
                 //下单
                 $xiadzong = model('user_task')->where('uid','in',$teamUids)->count();
                 $xiadtoday = model('user_task')->where('uid','in',$teamUids)->where('add_time','between',[strtotime(date('Y-m-d')),time()])->count();

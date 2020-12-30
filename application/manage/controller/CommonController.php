@@ -66,7 +66,7 @@ class CommonController extends Controller{
         if($agent_info['type']==1){
             //获取所有自己及下级成员
             $agent_uid = model('Users')->where('username',$agent_info['username'])->value('id');//普通用户表对应的用户ID
-            $allSub = model('UserTeam')->where('team',$agent_uid)->column('uid');
+            $allSub = model('UserTeam')->where('uid',$agent_uid)->column('team');
             return $allSub;
         }
         return [];
@@ -81,7 +81,7 @@ class CommonController extends Controller{
             foreach ($agentUsers as $item){
                 $agentIds[] = model('Users')->where('username', $item)->value('id');
             }
-            $teamUids = model('UserTeam')->where('team','in',$agentIds)->column('uid');
+            $teamUids = model('UserTeam')->where('uid','in',$agentIds)->column('team');
             return $teamUids;
         }
         return [];

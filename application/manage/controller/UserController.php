@@ -26,7 +26,7 @@ class UserController extends CommonController{
 			//传递指定代理
             if(!empty($param['agent_name'])){
                 $agent_id = model('Users')->where('username',$param['agent_name'])->value('id');
-                $agentuids = model('UserTeam')->where('team',$agent_id)->column('uid');
+                $agentuids = model('UserTeam')->where('uid',$agent_id)->column('team');
                 $where[] = ['ly_users.id','in',$agentuids];
             }
             //区域
