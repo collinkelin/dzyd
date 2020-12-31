@@ -18,21 +18,24 @@ class UserWithdrawalsModel extends Model
 		$userArr	= explode(',',auth_code($token,'DECODE'));//uid,username
 		$uid		= $userArr[0];//uid
 		$username	= $userArr[1];//username
-		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+//		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+		$lang		= 'en';	// 语言类型
 
         //如果未完成当天的任务不允许提现
-        $user_info = model('users')->where('id',$uid)->field('vip_level')->find();
+        $user_vip_level = model('users')->where('id',$uid)->value('vip_level');
         //可领取任务次数
-        $task_number = model('UserGrade')->where('grade',$user_info['vip_level'])->value('number');
+        $task_number = model('UserGrade')->where('grade',$user_vip_level)->value('number');
         //今日剩余任务数
         $todayRemainNumber = $task_number- model('Users')->earnings(array('type'=>'today_j_num','uid'=>$uid));
 
-        /*if($todayRemainNumber>0){
-            if($post['draw_money']> ($user_info['balance']* 10)/100 ) {
+        if($todayRemainNumber>0){
+            //用户余额的10%才能提
+            $user_balance = model('UserTotal')->where('uid',$uid)->value('balance');
+            if($post['draw_money']> ($user_balance* 10)/100 ) {
 //                return ['code' => 0, 'code_dec' => 'You still have remaining tasks that are not completed and cannot be withdrawn.'];
-                return ['code' => 0, 'code_dec' => 'If the task is not completed, the withdrawal limit cannot exceed 10%'];
+                return ['code' => 0, 'code_dec' => 'If the task is not completed, the withdrawal limit cannot exceed 10%.'];
             }
-        }*/
+        }
 
 		/*laoli--------------------------------------------------------start*/
 		//查询用户类型——测试用户类型不允许提现
