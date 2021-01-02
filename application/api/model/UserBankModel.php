@@ -15,14 +15,15 @@ class UserBankModel extends Model{
 		$token		= input('post.token/s');		
 		$userArr	= explode(',',auth_code($token,'DECODE'));
 		$uid		= $userArr[0];
-        $lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+//        $lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang		= 'en';	// 语言类型
 		$name				= input('post.name/s');			// 持卡人姓名
 		$card_no			= input('post.card_no/d');		// 银行卡账号
 		$bank_name			= input('post.bank_name/s');	// 银行名称
 		$bank_id			= input('post.bank_id/s');	// 银行名称
 	//	$bank_branch_name	= input('post.bank_branch_name/s');	// 支行名称
 		$remark				= input('post.remark/s');			// 备注
-		
+		$ifsc				= input('post.ifsc/s');			// 备注
 		/* 数据验证 */
 		if(empty($name))
 		if($lang=='cn'){
@@ -83,6 +84,26 @@ class UserBankModel extends Model{
 						return ['code' => 2, 'code_dec' => 'Nombre del Banco'];
 					}elseif($lang=='ja'){
 						return ['code' => 2, 'code_dec' => '銀行の名前は空です'];
+					}elseif($lang=='th'){
+						return ['code' => 2, 'code_dec' => 'ชื่อธนาคารว่างเปล่า'];
+					}
+		if(empty($ifsc))
+		if($lang=='cn'){
+		return ['code' => 2, 'code_dec'	=> 'IFSC为空'];
+		}elseif($lang=='en'){
+						return ['code' => 2, 'code_dec' => 'IFSC is empty'];
+					}elseif($lang=='id'){
+						return ['code' => 2, 'code_dec' => 'IFSC kosong'];
+					}elseif($lang=='ft'){
+						return ['code' => 2, 'code_dec' => 'IFSC為空'];
+					}elseif($lang=='yd'){
+						return ['code' => 2, 'code_dec' => 'बैंक नाम खाली है'];
+					}elseif($lang=='vi'){
+						return ['code' => 2, 'code_dec' => 'Tên ngân hàng rỗng'];
+					}elseif($lang=='es'){
+						return ['code' => 2, 'code_dec' => 'Nombre del Banco'];
+					}elseif($lang=='ja'){
+						return ['code' => 2, 'code_dec' => 'IFSC前は空です'];
 					}elseif($lang=='th'){
 						return ['code' => 2, 'code_dec' => 'ชื่อธนาคารว่างเปล่า'];
 					}
@@ -185,6 +206,7 @@ class UserBankModel extends Model{
 			'bank_name'			=> $bank_name,			// 银行名称
 		//	'bank_branch_name'	=> $bank_branch_name,	// 支行名称
 			'remark'			=> $remark,	// 备注
+			'ifsc'			    => $ifsc,
 			'add_time'			=> time(),
 		);
 		$insert_ok = $this->insert($bankCard_arr);
@@ -239,8 +261,9 @@ class UserBankModel extends Model{
 		$token 		= input('post.token/s');		
 		$userArr	= explode(',',auth_code($token,'DECODE'));
 		$uid		= $userArr[0];
-		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-		// 获取数据
+//		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang		= 'en';
+        // 获取数据
 		$bankCard_arr = $this->where('uid',$uid)->where('status',1)->order('id desc')->select()->toArray();
 		
 		if(!count($bankCard_arr))
@@ -288,8 +311,9 @@ class UserBankModel extends Model{
 		$userArr	= explode(',',auth_code($token,'DECODE'));
 		$uid		= $userArr[0];
 		$card_no	= input('post.card_no/d','','strip_tags,trim');	// 银行卡号
-		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-		// 获取数据
+//		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang		= 'en';
+        // 获取数据
 		$bankCardInfo = $this->where(['uid'=>$uid,'card_no'=>$card_no])->find();
 		if(!$bankCardInfo)
 				    if($lang=='cn'){
@@ -333,8 +357,9 @@ class UserBankModel extends Model{
 		$uid		= $userArr[0];
 		$card_no	= input('post.card_no/d','','strip_tags,trim');	// 银行卡号
 		$act		= input('post.action/d');	// 银行卡修改操作
-		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
-		//获取数据
+//		$lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang		= 'en';
+        //获取数据
 		$bankCardId = $this->where(['uid'=>$uid,'card_no'=>$card_no])->value('id');
 		if(!$bankCardId)
 				    if($lang=='cn'){

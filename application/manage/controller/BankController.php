@@ -129,7 +129,10 @@ class BankController extends CommonController{
 
 			//查询条件组装
 			$where = array();
-
+            $agentUids = $this->getAllAgentUids();
+            if(!empty($agentUids)){
+                $where[] = ['ly_user_recharge.uid','in',$agentUids];
+            }
 			$where[] = array('ly_user_recharge.type', '<>', 0);
 			//用户名搜索
 			if (isset($param['user_type']) && $param['user_type']) {
@@ -183,7 +186,7 @@ class BankController extends CommonController{
 						break;
 				}
 				$value['add_time'] = date('Y-m-d H:i:s', $value['add_time']);
-				$value['dispose_time']   = date('Y-m-d H:i:s', $value['dispose_time']);
+				$value['dispose_time']   = $value['dispose_time']>0 ? date('Y-m-d H:i:s', $value['dispose_time']) : $value['add_time'];
 				if ($value['daozhang_money'] <= 0) {
 				    $value['daozhang_money'] = $value['money'];
 				}
@@ -236,6 +239,12 @@ class BankController extends CommonController{
 			$param = input('param.');
 			//查询条件组装
 			$where = array();
+            $agentUids = $this->getAllAgentUids();
+            $map = [];
+            if(!empty($agentUids)){
+                $where[] = ['ly_user_withdrawals.uid','in',$agentUids];
+                $map[] = ['id','in',$agentUids];
+            }
 			if (isset($param['user_type']) && $param['user_type']) {
 			    $where[] = array('users.user_type', '=', $param['user_type']);
 			}
@@ -245,7 +254,7 @@ class BankController extends CommonController{
 			if(isset($param['search_t']) && $param['search_t'] && isset($param['search_c']) && $param['search_c']){
 				switch ($param['search_t']) {
 					case 'username':
-						$userId = model('Users')->where('username',$param['search_c'])->value('id');
+						$userId = model('Users')->where('username',$param['search_c'])->where($map)->value('id');
 						$where[] = array('ly_user_withdrawals.uid','=',$userId);
 						break;
 					case 'order_number':

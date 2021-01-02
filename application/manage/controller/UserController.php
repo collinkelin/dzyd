@@ -20,12 +20,27 @@ class UserController extends CommonController{
 		if (request()->isAjax()) {
 			//获取参数
 			$param = input('post.');
+//			var_dump($param);exit;
 			//查询条件组装
 			$where = [];
-
+			//传递指定代理
+            if(!empty($param['agent_name'])){
+                $agent_id = model('Users')->where('username',$param['agent_name'])->value('id');
+                $agentuids = model('UserTeam')->where('uid',$agent_id)->column('team');
+                $where[] = ['ly_users.id','in',$agentuids];
+            }
+            //区域
+            if(isset($param['area_type']) && $param['area_type']){
+                $uids = $this->getAreaAgentUids($param['area_type']);
+                $where[] = ['ly_users.id','in',$uids];
+            }
+			//代理登录过滤
+            $agentuids = $this->getAllAgentUids();
+            !empty($agentuids) && $where[] = ['ly_users.id','in',$agentuids];
 			//用户名
 			if(isset($param['username']) && $param['username']){
 				$where[] = ['ly_users.username','like','%'.$param['username'].'%'];
+
 			}
 			//用户名
 			if(isset($param['uid']) && $param['uid']){
@@ -64,7 +79,8 @@ class UserController extends CommonController{
 				$where[]  = ['reg_time','<=',strtotime($dateTime[1])];
 			}
 
-			$count              = model('Users')->join('user_total','ly_users.id = user_total.uid')->where($where)->count(); // 总记录数
+
+            $count              = model('Users')->join('user_total','ly_users.id = user_total.uid')->where($where)->count(); // 总记录数
 			$param['limit']     = (isset($param['limit']) and $param['limit']) ? $param['limit'] : 15; // 每页记录数
 			$param['page']      = (isset($param['page']) and $param['page']) ? $param['page'] : 1; // 当前页
 			$limitOffset        = ($param['page'] - 1) * $param['limit']; // 偏移量
@@ -87,7 +103,13 @@ class UserController extends CommonController{
 				'data'  => $data
 			]);
 		}
-
+        $arealist = $this->getAreaList();
+		$get = input('get.');
+        $agentName = '';
+		isset($get['name']) && $agentName = $get['name'];
+//		var_dump($get);exit;
+        $this->assign('agent_name',$agentName);
+        $this->assign('arealist',$arealist);
 		return view();
 	}
 	/**
@@ -242,7 +264,11 @@ class UserController extends CommonController{
 		if (request()->isAjax()) {
 			$param = input('post.');//获取参数
 			//查询条件组装
-			$where = array();
+			$where = [];
+            $agentUids = $this->getAllAgentUids();
+            if(!empty($agentUids)){
+                $where[] = ['users.id','in',$agentUids];
+            }
 			//用户名搜索
 			if(isset($param['username']) && $param['username']){
 				$where[] = array('users.username','=',$param['username']);
@@ -325,8 +351,13 @@ class UserController extends CommonController{
             var_dump($treedata);exit;*/
             $param = input('param.');
 
-			$newUser = model('Users')->alias('u')->field('u.id,username as title,sid as field');
+            $agentUids = $this->getAllAgentUids();
+            $map = [];
+            if(!empty($agentUids)){
+                $map[] = ['ly_users.id','in',$agentUids];
+            }
 
+            $newUser = model('Users')->alias('u')->field('u.id,username as title,sid as field')->where($map);
 			$where = [];
 			if (isset($param['username']) && $param['username']) {
 				// $where[] = ['username', 'like', '%'.$param['username'].'%'];
@@ -631,6 +662,10 @@ class UserController extends CommonController{
 			$param = input('post.');//获取参数
 			//查询条件组装
 			$where = array();
+            $agentUids = $this->getAllAgentUids();
+            if(!empty($agentUids)){
+                $where[] = ['uid','in',$agentUids];
+            }
 			//用户名搜索
 			if(isset($param['username']) && $param['username']){
 				$where[] = array('username','=',$param['username']);

@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="6a9513a1-227a-49ec-84d1-2d694ecec075" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/api/model/TaskModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/model/TaskModel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/api/model/UsersModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/model/UsersModel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/manage/model/UserDailyModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/manage/model/UserDailyModel.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,9 +45,17 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../dztg" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\dzyd\dzxts\application\manage\view\agent" />
+      <recent name="D:\dzyd\dzxts\public\resource\js\manage" />
+      <recent name="D:\dzyd\dzxts\application\manage\view" />
+      <recent name="D:\dzyd\dzxts\application\manage\controller" />
+    </key>
   </component>
   <component name="RunManager" selected="PHP Script.test.php">
     <configuration name="Unnamed" type="PhpLocalRunConfigurationType" factoryName="PHP Console" nameIsGenerated="true">
@@ -93,7 +98,19 @@
       <workItem from="1609040845428" duration="638000" />
       <workItem from="1609069525961" duration="621000" />
       <workItem from="1609071795858" duration="15506000" />
-      <workItem from="1609125826616" duration="42603000" />
+      <workItem from="1609125826616" duration="71597000" />
+      <workItem from="1609301458414" duration="1928000" />
+      <workItem from="1609306046583" duration="10804000" />
+      <workItem from="1609322809053" duration="6502000" />
+      <workItem from="1609342866322" duration="2017000" />
+      <workItem from="1609385325238" duration="14000" />
+      <workItem from="1609389324890" duration="4057000" />
+      <workItem from="1609403784232" duration="4256000" />
+      <workItem from="1609428678900" duration="25000" />
+      <workItem from="1609428741442" duration="155000" />
+      <workItem from="1609431131101" duration="629000" />
+      <workItem from="1609431980780" duration="1201000" />
+      <workItem from="1609562783600" duration="23000" />
     </task>
     <servers />
   </component>
@@ -151,6 +168,11 @@
           <url>file://$PROJECT_DIR$/application/api/model/UserTeamModel.php</url>
           <line>146</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/application/manage/model/TaskModel.php</url>
+          <line>491</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

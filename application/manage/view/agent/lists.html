@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>会员列表</title>
+    <title>代理列表</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -17,31 +17,22 @@
                     <form class="layui-form search">
                         <div class="layui-form-item">
                              <div class="layui-inline">
-                                 <label class="layui-form-label">代理区域</label>
-                                 <div class="layui-input-inline">
-                                     <select name="area_type" lay-search="">
-                                         <option value="">--请选择--</option>
-                                         {foreach $arealist as  $key => $value}
-                                         <option value="{$key}">{$value}</option>
-                                         {/foreach}
-                                     </select>
-                                 </div>
-                            </div>
-                            <div class="layui-inline">
-                                    <label class="layui-form-label">账号类型</label>
+                                    <label class="layui-form-label">代理区域</label>
                                     <div class="layui-input-inline">
-                                        <select name="user_type" lay-search="">
-                                             <option value="0">全部</option>
-                                            <option value="1">代理</option>
-                                            <option value="2">会员</option>
-                                            <option value="3">测试</option>
+                                        <select name="area_type" lay-search="">
+                                            <option value="">--请选择--</option>
+                                            {foreach $arealist as  $key => $value}
+                                            <option value="{$key}">{$value}</option>
+                                            {/foreach}
                                         </select>
                                     </div>
                             </div>
+
+                            
                             <div class="layui-inline">
-                                <label class="layui-form-label">账号</label>
+                                <label class="layui-form-label">代理账号</label>
                                 <div class="layui-input-inline">
-                                    <input class="layui-input" name="username" autocomplete="off" value="{$agent_name}">
+                                    <input class="layui-input" name="username" autocomplete="off">
                                 </div>
                             </div>
                             <div class="layui-inline">
@@ -50,7 +41,7 @@
                                     <input class="layui-input" name="uid" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="layui-inline">
+                            <!--<div class="layui-inline">
                                 <label class="layui-form-label">余额</label>
                                 <div class="layui-input-inline" style="width: 100px;">
                                     <input type="text" name="balance1" placeholder="￥" class="layui-input">
@@ -59,8 +50,8 @@
                                 <div class="layui-input-inline" style="width: 100px;">
                                     <input type="text" name="balance2" placeholder="￥" class="layui-input">
                                 </div>
-                            </div>
-                            <div class="layui-inline">
+                            </div>-->
+                            <!--<div class="layui-inline">
                                     <label class="layui-form-label">账号状态</label>
                                     <div class="layui-input-inline">
                                         <select name="state" lay-search="">
@@ -69,13 +60,13 @@
                                             {/foreach}
                                         </select>
                                     </div>
-                            </div>
-                            <div class="layui-inline">
+                            </div>-->
+                            <!--<div class="layui-inline">
                                 <label class="layui-form-label">注册时间</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="datetime_range" class="layui-input" readonly>
                                 </div>
-                            </div>
+                            </div>-->
                             <div class="layui-inline" style="text-align: center;">
                                 <button type="button" class="layui-btn" data-type="search">搜索</button>
                             </div>
@@ -96,7 +87,7 @@
             <button type="button" class="layui-btn layui-btn-sm layui-btn-primary useradd_btn" lay-event="add">
                 <i class="layui-icon">&#xe654;</i>
             </button>
-            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" lay-event="creditAssess">信用评估</button>
+<!--            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" lay-event="creditAssess">信用评估</button>-->
         </div>
     </script>
     <!-- 表单元素 -->
@@ -105,13 +96,19 @@
     </script>
     <script type="text/html" id="danger">
         <input type="checkbox" name="danger" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="userAction" data-suburi="risk" {{ d.danger == 1 ? 'checked' : '' }}>
-        <input type="hidden" name="agent_name" value="{$agent_name}">
     </script>
     <script type="text/html" id="action">
     	<div class="layui-btn-group">
-    		<button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="capital">资金</button>
-    		<button type="button" class="layui-btn layui-btn-xs" lay-event="edit">
-    			<i class="layui-icon">&#xe642;</i>
+            <button type="button" class="layui-btn layui-btn-xs" lay-event="edit">
+                <i class="layui-icon">&#xe642;</i>
+            </button>
+    		<button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="capital">代理总览</button>
+    		<button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="team_member">团队成员</button>
+<!--            <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="capital">全局报表</button>-->
+<!--            <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="capital">团队报表</button>-->
+<!--            <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="capital">每日报表</button>-->
+<!--            <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="capital">充值记录</button>-->
+<!--            <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="capital">提现记录</button>-->
     		</button>
 	    </div>
     </script>
@@ -119,7 +116,7 @@
 
 <script src="/resource/layuiadmin/layui/layui.js"></script>
 <script src="/resource/js/manage/init_date.js"></script>
-<script src="/resource/js/manage/user.js"></script>
+<script src="/resource/js/manage/agent.js"></script>
 <script>
     layui.use(['table'], function(){
         var $ = layui.$
@@ -129,35 +126,32 @@
         table.render({
             elem: '#userList'
             ,title: '用户列表'
-            ,url: '/manage/user/userList'
+            ,url: '/manage/agent/lists'
             ,method: 'post'
-            ,where:{
-                "agent_name": "{$agent_name}"
-            }
             ,cols: [[
-                {checkbox: true, fixed: true, totalRowText: '合计'}
-                ,{field: 'username', title: '账号', sort: true, fixed: 'left'}
-                ,{field: 'uid', title: 'UID', sort: true}
-                ,{field: 'vname', title: '等级'}
-                ,{field: 'balance', title: '余额', sort: true, totalRow: true}
+                // {checkbox: true, fixed: true, totalRowText: '合计'}
+                {field: 'username', title: '账号', sort: true, fixed: 'left'}
+                ,{field: 'uid', title: '邀请码(UID)', sort: true}
+                // ,{field: 'vname', title: '等级'}
+                // ,{field: 'balance', title: '余额', sort: true, totalRow: true}
                 // ,{field: 'total_balance', title: '账户总额', sort: true, totalRow: true}
                 ,{field: 'isOnline', title: '在离状态'}
                 ,{field: 'state', title: '账号状态', sort: true, templet: function(d){
                     return d.stateStr;
                 }}
-                ,{field: 'credit', title: '信用值', sort: true}
-                ,{field: 'zcip', title: '注册IP', sort: true}
-                ,{field: 'last_ip', title: '最后登录IP', sort: true}
-                ,{title: '账号锁定', templet: '#lockAccount', unresize: true}
-                ,{field: 'danger', title: '风险账号', sort: true, templet: '#danger', unresize: true}
-                ,{title: '操作', width: '20%', toolbar: '#action'}
+                // ,{field: 'credit', title: '信用值', sort: true}
+                // ,{field: 'zcip', title: '注册IP', sort: true}
+                // ,{field: 'last_ip', title: '最后登录IP', sort: true}
+                // ,{title: '账号锁定', templet: '#lockAccount', unresize: true}
+                // ,{field: 'danger', title: '风险账号', sort: true, templet: '#danger', unresize: true}
+                ,{title: '操作', width: '50%', toolbar: '#action'}
             ]]
             ,cellMinWidth: 100
             ,toolbar: '#toolbarDemo'
             ,defaultToolbar: ['filter', 'print', 'exports']
-            ,totalRow: true
+            // ,totalRow: true
             ,page: {
-                layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+                layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
             }
             ,skin: 'row' //行边框风格
             ,even: true //开启隔行背景
@@ -190,9 +184,10 @@
                         ,balance2: $("input[name='balance2']").val()
                         ,state: $("select[name='state'] option:selected").val()
                         ,is_automatic: $("select[name='is_automatic'] option:selected").val()
-						,idcode:$("input[name='idcode']").val()
-						,user_type:$('select[name=user_type] option:selected').val()
-						,area_type:$('select[name=area_type] option:selected').val()
+						,idcode:$("input[name='idcode']").val(),
+						// user_type:$('select[name=user_type] option:selected').val()
+						area_type:$('select[name=area_type] option:selected').val()
+
                     }
                 }, 'data');
             }

@@ -12,6 +12,40 @@ class UserRechargeModel extends Model
 	 * [inpourpay 用户使用该接口提交充值记录订单]
 	 * @return [type] [description]
 	 */
+    public function curl_get($url){
+
+        $header = array(
+            'Accept: application/json',
+        );
+        $curl = curl_init();
+        //设置抓取的url
+        curl_setopt($curl, CURLOPT_URL, $url);
+        //设置头文件的信息作为数据流输出
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        // 超时设置,以秒为单位
+        curl_setopt($curl, CURLOPT_TIMEOUT, 1);
+    
+        // 超时设置，以毫秒为单位
+        // curl_setopt($curl, CURLOPT_TIMEOUT_MS, 500);
+    
+        // 设置请求头
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+        //设置获取的信息以文件流的形式返回，而不是直接输出。
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        //执行命令
+        $data = curl_exec($curl);
+        // 显示错误信息
+        if (curl_error($curl)) {
+            print "Error: " . curl_error($curl);
+        } else {
+            curl_close($curl);
+            // 打印返回的内容
+            return $data;
+            
+        }
+	}
 	public function newRechargeOrder(){
 		//获取参数
 		$token 		= input('post.token/s');
@@ -48,31 +82,6 @@ class UserRechargeModel extends Model
 		//数据验证
 		$validate = validate('app\api\validate\Recharge');
 		if (!$validate->scene('userRechargeSub')->check($param)) return ['code'=>0,'code_dec'=>$validate->getError()];
-		
-		// 获取渠道信息
-		$rechargeTypeInfo = model('RechangeType')->where('id', $param['recharge_id'])->find();
-		if ($param['money'] < $rechargeTypeInfo['minPrice'] || $param['money'] > $rechargeTypeInfo['maxPrice']) 
-		            if($lang=='cn'){
-		                return ['code'=>0,'code_dec'=>'金额过高或过低'];
-		            }elseif($lang=='en'){
-						return ['code' => 0, 'code_dec' => 'The amount is too high or too low'];
-					}elseif($lang=='id'){
-						return ['code' => 0, 'code_dec' => 'Jumlah terlalu tinggi atau terlalu rendah'];
-					}elseif($lang=='ft'){
-						return ['code' => 0, 'code_dec' => '金額過高或過低'];
-					}elseif($lang=='yd'){
-						return ['code' => 0, 'code_dec' => 'मात्रा बहुत उच्च है या बहुत कम है'];
-					}elseif($lang=='vi'){
-						return ['code' => 0, 'code_dec' => 'Số lượng này quá cao hoặc quá thấp'];
-					}elseif($lang=='es'){
-						return ['code' => 0, 'code_dec' => 'Importe elevado o bajo'];
-					}elseif($lang=='ja'){
-						return ['code' => 0, 'code_dec' => '金額が高すぎたり、低すぎたりします。'];
-					}elseif($lang=='th'){
-						return ['code' => 0, 'code_dec' => 'มากเกินไปหรือต่ำเกินไป'];
-					}			
-		
-
 		$orderNumber = 'T'.trading_number();
 		$insertArray = [
 			'uid'          => $uid,
@@ -82,110 +91,171 @@ class UserRechargeModel extends Model
 			'postscript'    => $param['name'],
 			'add_time'     => time()
 		];
-
-		//孟加支付充值
-        if ($rechargeTypeInfo['code']=='213081465') {
-            $time = time();
-            $pay_config = config('pay.');
-            $params = [
-                'mch_id'=>$pay_config['merchant_id'],
-//                'ptype'=>3,//
-                'order_sn'=>$orderNumber,
-                'money'=>$insertArray['money'], //卢比
-                'goods_desc'=>'recharge',
-                'client_ip'=>get_client_ip(),
-                'format'=>'page',
-                'notify_url'=>$pay_config['notify_url'],
-                'time'=>$time,
-//                'paytm_account'=>'collin',
-            ];
-            $sort_params = asc_sort($params);
-            $sign = md5($sort_params.'&key='.$pay_config['secret']);
-            $params['sign'] = $sign;
-            $json_params = urlencode(json_encode($params));
-            $response = file_get_contents($pay_config['recharge_api']."?json=".$json_params);
-            if(!$response){
-                return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
-            }
-            $result = json_decode($response,true);
-            if (!$result || $result['code']!=1 || $result['msg'] != 'ok') {
-                return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
-            }
-            $insertArray['postscript'] = $response;
+	    $time = time();
+        $pay_config = config('pay.');
+        $params = [
+            'mch_id'=>$pay_config['merchant_id'],
+            'ptype'=>3,//
+            'order_sn'=>$orderNumber,
+            'money'=>$insertArray['money'], //卢比
+            'goods_desc'=>'recharge',
+            'client_ip'=>get_client_ip(),
+            'format'=>'page',
+            'notify_url'=>$pay_config['notify_url'],
+            'time'=>$time,
+        ];
+        $sort_params = asc_sort($params);
+        $sign = md5($sort_params.'&key='.$pay_config['secret']);
+        $params['sign'] = $sign;
+        $json_params = urlencode(json_encode($params));
+        $response = $this->curl_get($pay_config['recharge_api']."?json=".$json_params);
+        if(!$response){
+            return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
         }
-		$res = $this->allowField(true)->save($insertArray);
-		if (!$res)
-		            if($lang=='cn'){
-		                return ['code'=>0,'code_dec'=>'提交失败'];
-		            }elseif($lang=='en'){
-						return ['code' => 0, 'code_dec' => 'Submit failed'];
-					}elseif($lang=='id'){
-						return ['code' => 0, 'code_dec' => 'Pengiriman gagal'];
-					}elseif($lang=='ft'){
-						return ['code' => 0, 'code_dec' => '提交失敗'];
-					}elseif($lang=='yd'){
-						return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
-					}elseif($lang=='vi'){
-						return ['code' => 0, 'code_dec' => 'Lỗi gởi'];
-					}elseif($lang=='es'){
-						return ['code' => 0, 'code_dec' => 'Presentación fallida'];
-					}elseif($lang=='ja'){
-						return ['code' => 0, 'code_dec' => '送信に失敗しました'];
-					}elseif($lang=='th'){
-						return ['code' => 0, 'code_dec' => 'ความล้มเหลวในการส่ง'];
-					}				
-		
-		// 获取收款账号信息
-		$recaivablesInfo = model('Recaivables')->field('ly_recaivables.id,ly_recaivables.account,ly_recaivables.name,ly_recaivables.qrcode,bank.bank_name')
-			->join('bank','ly_recaivables.bid=bank.id','left')
-			->where('ly_recaivables.type', $param['recharge_id'])->select()->toArray();
-		if (!$recaivablesInfo)
-		            if($lang=='cn'){
-		                return ['code'=>0,'code_dec'=>'暂无收款账户'];
-		            }elseif($lang=='en'){
-						return ['code' => 0, 'code_dec' => 'No collection account'];
-					}elseif($lang=='id'){
-						return ['code' => 0, 'code_dec' => 'Tidak ada akun koleksi'];
-					}elseif($lang=='ft'){
-						return ['code' => 0, 'code_dec' => '暫無收款帳戶'];
-					}elseif($lang=='yd'){
-						return ['code' => 0, 'code_dec' => 'कोई संग्रह खाता नहीं'];
-					}elseif($lang=='vi'){
-						return ['code' => 0, 'code_dec' => 'Không có tài khoản'];
-					}elseif($lang=='es'){
-						return ['code' => 0, 'code_dec' => 'Cuenta de cobro'];
-					}elseif($lang=='ja'){
-						return ['code' => 0, 'code_dec' => '入金口座がありません'];
-					}elseif($lang=='th'){
-						return ['code' => 0, 'code_dec' => 'ไม่มีบัญชีลูกหนี้'];
-					}		
+        $result = json_decode($response,true);
+        if (!$result || $result['code']!=1 || $result['msg'] != 'ok') {
+            return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
+        }
+        $insertArray['postscript'] = $response;
+        $res = $this->allowField(true)->save($insertArray);
+        return ['code' => 1, 'code_dec' => $result['msg'], 'url'=> $result['data']['url']];
+// 		// 获取渠道信息
+// 		$rechargeTypeInfo = model('RechangeType')->where('id', $param['recharge_id'])->find();
+// 		if ($param['money'] < $rechargeTypeInfo['minPrice'] || $param['money'] > $rechargeTypeInfo['maxPrice']) 
+// 		            if($lang=='cn'){
+// 		                return ['code'=>0,'code_dec'=>'金额过高或过低'];
+// 		            }elseif($lang=='en'){
+// 						return ['code' => 0, 'code_dec' => 'The amount is too high or too low'];
+// 					}elseif($lang=='id'){
+// 						return ['code' => 0, 'code_dec' => 'Jumlah terlalu tinggi atau terlalu rendah'];
+// 					}elseif($lang=='ft'){
+// 						return ['code' => 0, 'code_dec' => '金額過高或過低'];
+// 					}elseif($lang=='yd'){
+// 						return ['code' => 0, 'code_dec' => 'मात्रा बहुत उच्च है या बहुत कम है'];
+// 					}elseif($lang=='vi'){
+// 						return ['code' => 0, 'code_dec' => 'Số lượng này quá cao hoặc quá thấp'];
+// 					}elseif($lang=='es'){
+// 						return ['code' => 0, 'code_dec' => 'Importe elevado o bajo'];
+// 					}elseif($lang=='ja'){
+// 						return ['code' => 0, 'code_dec' => '金額が高すぎたり、低すぎたりします。'];
+// 					}elseif($lang=='th'){
+// 						return ['code' => 0, 'code_dec' => 'มากเกินไปหรือต่ำเกินไป'];
+// 					}			
 		
 
-		foreach ($recaivablesInfo as $key => &$value) {
-			$value['typeName'] = ($value['qrcode']) ? $rechargeTypeInfo['name'] : $value['bank_name'];
-		}
+// 		$orderNumber = 'T'.trading_number();
+// 		$insertArray = [
+// 			'uid'          => $uid,
+// 			'order_number' => $orderNumber,
+// 			'type'         => $param['recharge_id'],
+// 			'money'        => $param['money'],
+// 			'postscript'    => $param['name'],
+// 			'add_time'     => time()
+// 		];
 
-		$data['code']        = 1;
-		if(isset($result['url'])){
-            $data['url']         = $result['url']; //直接跳转第三方支付页面地址
-        }
-		$data['code_dec']    = 'The recharge application is submitted successfully';
-        if($lang=='cn'){
-            $data['code_dec']    = '充值申请提交成功';
-        }elseif($lang=='en'){
-            $data['code_dec']    = 'The recharge application is submitted successfully';
-        }elseif($lang=='id'){
-            $data['code_dec']    = 'रिचार्ज एप्लिकेशन को सफलतापूर्वक सबमिट किया गया है';
-        }elseif($lang=='yd'){
-            $data['code_dec']    = 'रिचार्ज एप्लिकेशन को सफलतापूर्वक सबमिट किया गया है';
-        }elseif($lang=='yny'){
-            $data['code_dec']    = 'Aplikasi isi ulang berhasil dikirim';
-        }
-		$data['orderNumber'] = $orderNumber;
-		$data['money']       = $param['money'];
-		$data['date']        = date('Y-m-d');
-		$data['receive']     = $recaivablesInfo;
-		return $data;
+// 		//孟加支付充值
+//         if ($rechargeTypeInfo['code']=='213081465') {
+//             $time = time();
+//             $pay_config = config('pay.');
+//             $params = [
+//                 'mch_id'=>$pay_config['merchant_id'],
+// //                'ptype'=>3,//
+//                 'order_sn'=>$orderNumber,
+//                 'money'=>$insertArray['money'], //卢比
+//                 'goods_desc'=>'recharge',
+//                 'client_ip'=>get_client_ip(),
+//                 'format'=>'page',
+//                 'notify_url'=>$pay_config['notify_url'],
+//                 'time'=>$time,
+// //                'paytm_account'=>'collin',
+//             ];
+//             $sort_params = asc_sort($params);
+//             $sign = md5($sort_params.'&key='.$pay_config['secret']);
+//             $params['sign'] = $sign;
+//             $json_params = urlencode(json_encode($params));
+//             $response = file_get_contents($pay_config['recharge_api']."?json=".$json_params);
+//             if(!$response){
+//                 return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
+//             }
+//             $result = json_decode($response,true);
+//             if (!$result || $result['code']!=1 || $result['msg'] != 'ok') {
+//                 return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
+//             }
+//             $insertArray['postscript'] = $response;
+//         }
+// 		$res = $this->allowField(true)->save($insertArray);
+// 		if (!$res)
+// 		            if($lang=='cn'){
+// 		                return ['code'=>0,'code_dec'=>'提交失败'];
+// 		            }elseif($lang=='en'){
+// 						return ['code' => 0, 'code_dec' => 'Submit failed'];
+// 					}elseif($lang=='id'){
+// 						return ['code' => 0, 'code_dec' => 'Pengiriman gagal'];
+// 					}elseif($lang=='ft'){
+// 						return ['code' => 0, 'code_dec' => '提交失敗'];
+// 					}elseif($lang=='yd'){
+// 						return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
+// 					}elseif($lang=='vi'){
+// 						return ['code' => 0, 'code_dec' => 'Lỗi gởi'];
+// 					}elseif($lang=='es'){
+// 						return ['code' => 0, 'code_dec' => 'Presentación fallida'];
+// 					}elseif($lang=='ja'){
+// 						return ['code' => 0, 'code_dec' => '送信に失敗しました'];
+// 					}elseif($lang=='th'){
+// 						return ['code' => 0, 'code_dec' => 'ความล้มเหลวในการส่ง'];
+// 					}				
+		
+// 		// 获取收款账号信息
+// 		$recaivablesInfo = model('Recaivables')->field('ly_recaivables.id,ly_recaivables.account,ly_recaivables.name,ly_recaivables.qrcode,bank.bank_name')
+// 			->join('bank','ly_recaivables.bid=bank.id','left')
+// 			->where('ly_recaivables.type', $param['recharge_id'])->select()->toArray();
+// 		if (!$recaivablesInfo)
+// 		            if($lang=='cn'){
+// 		                return ['code'=>0,'code_dec'=>'暂无收款账户'];
+// 		            }elseif($lang=='en'){
+// 						return ['code' => 0, 'code_dec' => 'No collection account'];
+// 					}elseif($lang=='id'){
+// 						return ['code' => 0, 'code_dec' => 'Tidak ada akun koleksi'];
+// 					}elseif($lang=='ft'){
+// 						return ['code' => 0, 'code_dec' => '暫無收款帳戶'];
+// 					}elseif($lang=='yd'){
+// 						return ['code' => 0, 'code_dec' => 'कोई संग्रह खाता नहीं'];
+// 					}elseif($lang=='vi'){
+// 						return ['code' => 0, 'code_dec' => 'Không có tài khoản'];
+// 					}elseif($lang=='es'){
+// 						return ['code' => 0, 'code_dec' => 'Cuenta de cobro'];
+// 					}elseif($lang=='ja'){
+// 						return ['code' => 0, 'code_dec' => '入金口座がありません'];
+// 					}elseif($lang=='th'){
+// 						return ['code' => 0, 'code_dec' => 'ไม่มีบัญชีลูกหนี้'];
+// 					}		
+		
+
+// 		foreach ($recaivablesInfo as $key => &$value) {
+// 			$value['typeName'] = ($value['qrcode']) ? $rechargeTypeInfo['name'] : $value['bank_name'];
+// 		}
+
+// 		$data['code']        = 1;
+// 		if(isset($result['url'])){
+//             $data['url']         = $result['url']; //直接跳转第三方支付页面地址
+//         }
+// 		$data['code_dec']    = 'The recharge application is submitted successfully';
+//         if($lang=='cn'){
+//             $data['code_dec']    = '充值申请提交成功';
+//         }elseif($lang=='en'){
+//             $data['code_dec']    = 'The recharge application is submitted successfully';
+//         }elseif($lang=='id'){
+//             $data['code_dec']    = 'रिचार्ज एप्लिकेशन को सफलतापूर्वक सबमिट किया गया है';
+//         }elseif($lang=='yd'){
+//             $data['code_dec']    = 'रिचार्ज एप्लिकेशन को सफलतापूर्वक सबमिट किया गया है';
+//         }elseif($lang=='yny'){
+//             $data['code_dec']    = 'Aplikasi isi ulang berhasil dikirim';
+//         }
+// 		$data['orderNumber'] = $orderNumber;
+// 		$data['money']       = $param['money'];
+// 		$data['date']        = date('Y-m-d');
+// 		$data['receive']     = $recaivablesInfo;
+// 		return $data;
 	}
 
 	public static function asc_sort($params = array())
@@ -510,7 +580,7 @@ class UserRechargeModel extends Model
 			$data['info'][$key]['status'] 		= $value['state'];
 			$data['info'][$key]['remarks'] 		= $value['remarks'];
 
-			if($lang=='cn'){
+			/*if($lang=='cn'){
 			$data['info'][$key]['status_desc'] 	= config('custom.rechargeStatus')[$value['state']];
 			}elseif($lang=='en'){
 			$data['info'][$key]['status_desc'] 	= config('custom.rechargeStatusen')[$value['state']];
@@ -528,8 +598,8 @@ class UserRechargeModel extends Model
 			$data['info'][$key]['status_desc'] 	= config('custom.rechargeStatusja')[$value['state']];
 			}elseif($lang=='th'){
 			$data['info'][$key]['status_desc'] 	= config('custom.rechargeStatusth')[$value['state']];
-			}
-			
+			}*/
+            $data['info'][$key]['status_desc'] 	= config('custom.rechargeStatusen')[$value['state']]; //只要英文
 			$data['info'][$key]['typedes'] 		= '充222值';
 		}
 		
