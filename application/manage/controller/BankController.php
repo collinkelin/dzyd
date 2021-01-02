@@ -186,7 +186,7 @@ class BankController extends CommonController{
 						break;
 				}
 				$value['add_time'] = date('Y-m-d H:i:s', $value['add_time']);
-				$value['dispose_time']   = date('Y-m-d H:i:s', $value['dispose_time']);
+				$value['dispose_time']   = $value['dispose_time']>0 ? date('Y-m-d H:i:s', $value['dispose_time']) : $value['add_time'];
 				if ($value['daozhang_money'] <= 0) {
 				    $value['daozhang_money'] = $value['money'];
 				}
