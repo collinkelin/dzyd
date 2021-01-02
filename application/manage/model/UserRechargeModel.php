@@ -128,9 +128,9 @@ class UserRechargeModel extends Model{
 			//获取订单信息
 			$orderInfo = $this->field('uid,money,order_number')->where('order_number',$orderNumber)->find();
 
-            if ($param['daozhang_money']) {
-                $orderInfo['money'] = $param['daozhang_money'];
-            }
+            // if ($param['daozhang_money']) {
+            //     $orderInfo['money'] = $param['daozhang_money'];
+            // }
 			//获取用户余额
 			$balance = model('UserTotal')->field('balance')->where('uid',$orderInfo['uid'])->find();
 			//更新用户金额信息

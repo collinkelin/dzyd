@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="6a9513a1-227a-49ec-84d1-2d694ecec075" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/api/model/UserRechargeModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/model/UserRechargeModel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/api/model/UsersModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/api/model/UsersModel.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +116,8 @@
       <workItem from="1609572163843" duration="247000" />
       <workItem from="1609575865748" duration="107000" />
       <workItem from="1609576587169" duration="201000" />
-      <workItem from="1609577619457" duration="311000" />
+      <workItem from="1609577619457" duration="510000" />
+      <workItem from="1609580068869" duration="468000" />
     </task>
     <servers />
   </component>

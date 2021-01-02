@@ -44,6 +44,25 @@ class OrderController extends BaseController{
             }
             //model('UserWithdrawals')->where('order_number',$data_arr['sh_order'])->setField('state',1);
             echo 'success';die;
+        }else{
+            $data = input('param.');
+            if (!$data) {
+                echo 'failed';die;
+            }
+            if(is_array($data)){
+                $data_arr = $data;
+            }
+            if(is_string($data)){
+                $data_arr = json_decode($data,true);
+            }
+            if($data_arr['status'] != 'PAY_SUCCESS'){
+                echo 'failed';die;
+            }
+            $callback_order = model('UserRecharge')->where('order_number',$data_arr['merchantorder'])->find();
+            if(!empty($callback_order)){
+                model('manage/UserRecharge')->rechargeDispose($callback_order);
+            }
+            echo 'ok';die;
         }
         echo 'failed';die;
 	}
