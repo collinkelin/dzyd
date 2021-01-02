@@ -1230,6 +1230,9 @@ class UsersModel extends Model{
         $lang			= 'en';
 		unset($param['token']);
 		unset($param['lang']);
+		if(isset($param['realname'])){
+		    $param['realname'] = trim($param['realname']);
+		}
 		if(!$param){
 			if($lang=='cn') return ['code' => 0, 'code_dec' => '未提交数据'];
 			elseif($lang=='en') return ['code' => 0, 'code_dec' => 'Data not submitted!'];

@@ -50,11 +50,11 @@ class UserRechargeModel extends Model
 		//获取参数
 		$token 		= input('post.token/s');
         $lang		= (input('post.lang')) ? input('post.lang') : 'id';	// 语言类型
+        $lang='en';
 		$userArr	= explode(',',auth_code($token,'DECODE'));//uid,username
 		$uid		= $userArr[0];//uid
 		$username 	= $userArr[1];//username
-
-		if (cache('submitRechargeTime'.$uid) && time() - cache('submitRechargeTime'.$uid) < 5) 
+        if (cache('submitRechargeTime'.$uid) && time() - cache('submitRechargeTime'.$uid) < 5) 
 		            if($lang=='cn'){
 		                return ['code'=>0,'code_dec'=>'提交过于频繁'];
 		            }elseif($lang=='en'){
@@ -92,33 +92,84 @@ class UserRechargeModel extends Model
 			'add_time'     => time()
 		];
 	    $time = time();
-        $pay_config = config('pay.');
-        $params = [
-            'mch_id'=>$pay_config['merchant_id'],
-            'ptype'=>3,//
-            'order_sn'=>$orderNumber,
-            'money'=>$insertArray['money'], //卢比
-            'goods_desc'=>'recharge',
-            'client_ip'=>get_client_ip(),
-            'format'=>'page',
-            'notify_url'=>$pay_config['notify_url'],
-            'time'=>$time,
-        ];
-        $sort_params = asc_sort($params);
-        $sign = md5($sort_params.'&key='.$pay_config['secret']);
-        $params['sign'] = $sign;
-        $json_params = urlencode(json_encode($params));
-        $response = $this->curl_get($pay_config['recharge_api']."?json=".$json_params);
-        if(!$response){
-            return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
-        }
-        $result = json_decode($response,true);
-        if (!$result || $result['code']!=1 || $result['msg'] != 'ok') {
-            return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
-        }
-        $insertArray['postscript'] = $response;
-        $res = $this->allowField(true)->save($insertArray);
-        return ['code' => 1, 'code_dec' => $result['msg'], 'url'=> $result['data']['url']];
+	    if($param['recharge_id'] == 116){
+	        		if ($param['money'] < 500 || $param['money'] > 100000) 
+		            if($lang=='cn'){
+		                return ['code'=>0,'code_dec'=>'金额过高或过低'];
+		            }elseif($lang=='en'){
+						return ['code' => 0, 'code_dec' => 'The amount is too high or too low'];
+					}elseif($lang=='id'){
+						return ['code' => 0, 'code_dec' => 'Jumlah terlalu tinggi atau terlalu rendah'];
+					}elseif($lang=='ft'){
+						return ['code' => 0, 'code_dec' => '金額過高或過低'];
+					}elseif($lang=='yd'){
+						return ['code' => 0, 'code_dec' => 'मात्रा बहुत उच्च है या बहुत कम है'];
+					}elseif($lang=='vi'){
+						return ['code' => 0, 'code_dec' => 'Số lượng này quá cao hoặc quá thấp'];
+					}elseif($lang=='es'){
+						return ['code' => 0, 'code_dec' => 'Importe elevado o bajo'];
+					}elseif($lang=='ja'){
+						return ['code' => 0, 'code_dec' => '金額が高すぎたり、低すぎたりします。'];
+					}elseif($lang=='th'){
+						return ['code' => 0, 'code_dec' => 'มากเกินไปหรือต่ำเกินไป'];
+					}
+	        $pay_config = config('pay.');
+            $params = [
+                'mch_id'=>$pay_config['merchant_id'],
+                'ptype'=>3,//
+                'order_sn'=>$orderNumber,
+                'money'=>$insertArray['money'], //卢比
+                'goods_desc'=>'recharge',
+                'client_ip'=>get_client_ip(),
+                'format'=>'page',
+                'notify_url'=>$pay_config['notify_url'],
+                'time'=>$time,
+            ];
+            $sort_params = asc_sort($params);
+            $sign = md5($sort_params.'&key='.$pay_config['secret']);
+            $params['sign'] = $sign;
+            $json_params = urlencode(json_encode($params));
+            $response = $this->curl_get($pay_config['recharge_api']."?json=".$json_params);
+            if(!$response){
+                return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
+            }
+            $result = json_decode($response,true);
+            if (!$result || $result['code']!=1 || $result['msg'] != 'ok') {
+                return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
+            }
+            $insertArray['postscript'] = $response;
+            $res = $this->allowField(true)->save($insertArray);
+            return ['code' => 1, 'code_dec' => $result['msg'], 'url'=> $result['data']['url']];
+	    }
+	    if($param['recharge_id'] == 118){
+	        $params = [
+                'merchantId'=>'2084368',
+                'merchantorder'=>$orderNumber,//
+                'money'=>sprintf("%.2f",$insertArray['money']),
+                'paytype'=>'upi', //卢比
+                'successurl'=>'http://m.m1mz0g.com/xml/#/user',
+                'verifyurl'=>'http://m.m1mz0g.com/api/Order/callBack',
+                'versions'=>'v2.0',
+            ];
+            $sort_params = asc_sort($params);
+            $sign = md5($sort_params.'&key=RdqkYwe8imF73anH7vCPNaw5L9iCwZk8');
+            $params['digest'] = strtoupper($sign);
+            $json_params = urlencode(json_encode($params));
+            print_r($json_params);
+            $response = $this->curl_get("https://order.user.hopeallgood168.com/index/payOrderV2?request=".$json_params);
+            print_r($response);die;
+            if(!$response){
+                return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
+            }
+            $result = json_decode($response,true);
+	        if (!$result || $result['code']!=1 || $result['msg'] != 'ok') {
+                return ['code' => 0, 'code_dec' => 'प्रेषण असफल'];
+            }
+            $insertArray['postscript'] = $response;
+            $res = $this->allowField(true)->save($insertArray);
+            return ['code' => 1, 'code_dec' => $result['msg'], 'url'=> $result['data']['url']];
+	    }
+        return ['code' => 0, 'code_dec' => 'error'];
 // 		// 获取渠道信息
 // 		$rechargeTypeInfo = model('RechangeType')->where('id', $param['recharge_id'])->find();
 // 		if ($param['money'] < $rechargeTypeInfo['minPrice'] || $param['money'] > $rechargeTypeInfo['maxPrice']) 
